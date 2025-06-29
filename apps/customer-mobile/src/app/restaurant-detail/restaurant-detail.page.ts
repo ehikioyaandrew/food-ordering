@@ -356,6 +356,11 @@ export class RestaurantDetailPage implements OnInit {
         );
     }
 
+    // If 'all' is selected, return all items; otherwise filter by category
+    if (this.selectedCategory === 'all') {
+      return restaurantMenuItems;
+    }
+
     return restaurantMenuItems.filter(
       (item) => item.category === this.selectedCategory
     );
