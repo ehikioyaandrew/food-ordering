@@ -1,0 +1,70 @@
+/* Using Tailwind CSS for styling - see restaurant-detail.page.html */
+
+/* Custom utility classes for special effects */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Improved button styling */
+ion-button {
+  --border-radius: 20px;
+
+  &.rounded-full {
+    --border-radius: 50px;
+  }
+}
+
+/* FAB button custom styling */
+ion-fab-button {
+  --background: var(--ion-color-primary);
+  --background-activated: var(--ion-color-primary-shade);
+  --background-hover: var(--ion-color-primary-tint);
+  --color: white;
+  --border-radius: 28px;
+  --box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3);
+
+  &:hover {
+    --box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+  }
+
+  div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+}
+
+/* Enhanced card styling */
+ion-card {
+  --background: var(--ion-color-light);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Menu item image styling */
+.menu-item-image {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Quantity controls styling */
+.quantity-controls {
+  background: var(--ion-color-light-shade);
+  border-radius: 25px;
+  padding: 4px;
+
+  ion-button {
+    --color: #ff6b35;
+    --background-hover: rgba(255, 107, 53, 0.1);
+    --border-radius: 50%;
+    margin: 0 2px;
+  }
+}

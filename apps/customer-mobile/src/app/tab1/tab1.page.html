@@ -1,0 +1,255 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <ion-icon name="restaurant-outline" class="text-lg"></ion-icon>
+          <span class="font-semibold">Discover Restaurants</span>
+        </div>
+        <!-- Theme Toggle Button aligned with title -->
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="toggleTheme()"
+          class="m-0 p-1"
+        >
+          <ion-icon
+            [name]="themeService.isDarkMode ? 'sunny-outline' : 'moon-outline'"
+            class="text-lg"
+          >
+          </ion-icon>
+        </ion-button>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-gray-50 dark:bg-dark-bg">
+  <ion-header collapse="condense" class="dark:bg-dark-bg">
+    <ion-toolbar class="dark:bg-dark-bg">
+      <ion-title size="large" class="text-gray-900 dark:text-white">
+        <div class="flex items-center justify-between">
+          <span>Discover</span>
+          <!-- Theme toggle in collapsed header too -->
+          <ion-button
+            fill="clear"
+            size="small"
+            (click)="toggleTheme()"
+            class="m-0 p-1"
+          >
+            <ion-icon
+              [name]="themeService.isDarkMode ? 'sunny-outline' : 'moon-outline'"
+              class="text-lg"
+            >
+            </ion-icon>
+          </ion-button>
+        </div>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="px-4 pb-4">
+    <!-- Search Section -->
+    <div class="mb-4">
+      <ion-searchbar
+        placeholder="Search restaurants, cuisine..."
+        [value]="searchQuery"
+        (ionInput)="onSearchChange($event)"
+        show-clear-button="focus"
+        class="rounded-2xl"
+      >
+      </ion-searchbar>
+    </div>
+
+    <!-- Location Banner -->
+    <div
+      class="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 rounded-2xl mb-6 border border-blue-100 dark:border-blue-800"
+    >
+      <ion-icon
+        name="location-outline"
+        class="text-blue-600 dark:text-blue-400 text-xl"
+      ></ion-icon>
+      <div class="flex-1">
+        <div class="text-sm text-gray-600 dark:text-gray-300 font-medium">
+          Delivering to
+        </div>
+        <div class="text-gray-900 dark:text-white font-semibold">
+          Downtown • Available Now
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="mb-6">
+      <ion-segment
+        [value]="selectedCategory"
+        (ionChange)="onCategoryChange($event)"
+        scrollable="true"
+        class="bg-gray-100 dark:bg-dark-bg-secondary rounded-2xl p-1"
+      >
+        <ion-segment-button
+          *ngFor="let category of categories"
+          [value]="category.value"
+          class="rounded-xl min-w-0"
+        >
+          <ion-label class="font-medium text-sm">{{category.label}}</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Featured Section -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+        Featured Restaurants
+      </h2>
+      <ion-chip
+        color="primary"
+        class="bg-food-orange dark:bg-food-orange-dark text-white font-medium"
+        >Popular</ion-chip
+      >
+    </div>
+
+    <!-- Restaurant Grid -->
+    <ion-grid class="p-0">
+      <ion-row>
+        <ion-col
+          size="12"
+          size-md="6"
+          class="p-2"
+          *ngFor="let restaurant of filteredRestaurants"
+        >
+          <ion-card
+            class="m-0 rounded-2xl shadow-card dark:shadow-card-dark hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-all duration-300 border-0 overflow-hidden bg-white dark:bg-dark-bg-card cursor-pointer"
+            [class]="!restaurant.isOpen ? 'opacity-70' : ''"
+            (click)="navigateToRestaurant(restaurant)"
+          >
+            <!-- Restaurant Image -->
+            <div class="relative h-48 bg-gray-200 dark:bg-gray-700">
+              <ion-img
+                [src]="restaurant.image"
+                [alt]="restaurant.name"
+                class="w-full h-full object-cover"
+              >
+              </ion-img>
+
+              <!-- Favorite Button -->
+              <ion-button
+                fill="clear"
+                size="small"
+                class="absolute top-3 right-3 bg-white/90 dark:bg-black/60 backdrop-blur-sm rounded-full w-10 h-10"
+                (click)="toggleFavorite(restaurant); $event.stopPropagation()"
+              >
+                <ion-icon
+                  [name]="restaurant.isFavorite ? 'heart' : 'heart-outline'"
+                  [class]="restaurant.isFavorite ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'"
+                  class="text-lg"
+                >
+                </ion-icon>
+              </ion-button>
+
+              <!-- Status Badge -->
+              <div
+                class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold"
+                [class]="restaurant.isOpen ? 'bg-green-500 dark:bg-green-600 text-white' : 'bg-red-500 dark:bg-red-600 text-white'"
+              >
+                {{restaurant.isOpen ? 'Open' : 'Closed'}}
+              </div>
+            </div>
+
+            <ion-card-content class="p-4">
+              <!-- Restaurant Info -->
+              <div>
+                <ion-card-title
+                  class="text-lg font-bold text-gray-900 dark:text-white mb-2"
+                  >{{restaurant.name}}</ion-card-title
+                >
+
+                <!-- Cuisine Tags -->
+                <div class="flex flex-wrap gap-1 mb-3">
+                  <ion-chip
+                    *ngFor="let cuisine of restaurant.cuisine"
+                    class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium px-2 py-1 rounded-lg"
+                  >
+                    {{cuisine}}
+                  </ion-chip>
+                </div>
+
+                <!-- Rating and Distance -->
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-1">
+                    <div class="flex">
+                      <ion-icon
+                        *ngFor="let filled of getStars(restaurant.rating)"
+                        [name]="filled ? 'star' : 'star-outline'"
+                        [class]="filled ? 'text-yellow-400 dark:text-yellow-300' : 'text-gray-300 dark:text-gray-600'"
+                        class="text-sm"
+                      >
+                      </ion-icon>
+                    </div>
+                    <span
+                      class="text-sm font-semibold text-gray-700 dark:text-gray-200 ml-1"
+                      >{{restaurant.rating}}</span
+                    >
+                  </div>
+
+                  <div
+                    class="flex items-center gap-1 text-gray-500 dark:text-gray-400"
+                  >
+                    <ion-icon
+                      name="location-outline"
+                      class="text-sm"
+                    ></ion-icon>
+                    <span class="text-sm">{{restaurant.distance}}</span>
+                  </div>
+                </div>
+
+                <!-- Delivery Info -->
+                <div class="flex items-center justify-between text-sm mb-2">
+                  <div
+                    class="flex items-center gap-1 text-gray-600 dark:text-gray-300"
+                  >
+                    <ion-icon name="time-outline" class="text-sm"></ion-icon>
+                    <span>{{restaurant.deliveryTime}}</span>
+                  </div>
+
+                  <div class="flex items-center gap-1">
+                    <span class="text-gray-500 dark:text-gray-400"
+                      >Delivery:</span
+                    >
+                    <span
+                      [class]="restaurant.deliveryFee === 0 ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-700 dark:text-gray-200'"
+                    >
+                      {{restaurant.deliveryFee === 0 ? 'Free' : '$' +
+                      restaurant.deliveryFee}}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Min Order -->
+                <div
+                  class="text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-600"
+                >
+                  Min. order: ${{restaurant.minOrder}}
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Empty State -->
+    <div class="text-center py-12" *ngIf="filteredRestaurants.length === 0">
+      <ion-icon
+        name="restaurant-outline"
+        class="text-6xl text-gray-300 dark:text-gray-600 mb-4"
+      ></ion-icon>
+      <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
+        No restaurants found
+      </h3>
+      <p class="text-gray-500 dark:text-gray-400">
+        Try adjusting your search or filters
+      </p>
+    </div>
+  </div>
+</ion-content>

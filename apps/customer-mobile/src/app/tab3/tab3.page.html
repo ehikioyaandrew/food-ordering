@@ -1,0 +1,404 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      <div class="flex items-center gap-2">
+        <ion-icon name="person" class="text-lg"></ion-icon>
+        <span class="font-semibold">Profile</span>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-gray-50 dark:bg-dark-bg">
+  <ion-header collapse="condense" class="dark:bg-dark-bg">
+    <ion-toolbar class="dark:bg-dark-bg">
+      <ion-title size="large" class="text-gray-900 dark:text-white">
+        Profile
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Profile Content -->
+  <div class="px-4 pb-4">
+    <!-- User Profile Card -->
+    <div class="mb-6 pt-4">
+      <ion-card
+        class="m-0 rounded-2xl shadow-card dark:shadow-card-dark bg-gradient-to-br from-food-orange to-food-orange/80 dark:from-food-orange-dark dark:to-food-orange-dark/80"
+      >
+        <ion-card-content class="p-6 text-white">
+          <div class="flex items-center gap-4 mb-4">
+            <ion-avatar class="w-16 h-16">
+              <ion-img [src]="user.avatar" [alt]="user.name"></ion-img>
+            </ion-avatar>
+            <div class="flex-1">
+              <h2 class="text-xl font-bold text-white mb-1">{{user.name}}</h2>
+              <p class="text-white/80 text-sm mb-1">{{user.email}}</p>
+              <div class="flex items-center gap-2">
+                <ion-badge
+                  [class]="getMembershipColor() + ' text-white text-xs'"
+                >
+                  {{user.membershipLevel}} Member
+                </ion-badge>
+                <span class="text-white/60 text-xs"
+                  >Since {{user.joinDate}}</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">
+                {{user.totalOrders}}
+              </div>
+              <div class="text-white/70 text-xs">Orders</div>
+            </div>
+            <div class="text-center border-l border-r border-white/20">
+              <div class="text-2xl font-bold text-white">
+                {{user.favoriteRestaurants}}
+              </div>
+              <div class="text-white/70 text-xs">Favorites</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">4.8</div>
+              <div class="text-white/70 text-xs">Rating</div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">
+        Quick Actions
+      </h3>
+      <div class="grid grid-cols-2 gap-3">
+        <ion-card
+          class="m-0 rounded-xl shadow-card dark:shadow-card-dark bg-white dark:bg-dark-bg-card cursor-pointer"
+          (click)="editProfile()"
+        >
+          <ion-card-content class="p-4 text-center">
+            <ion-icon
+              name="person-outline"
+              class="text-2xl text-food-orange dark:text-food-orange-dark mb-2"
+            ></ion-icon>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">
+              Edit Profile
+            </div>
+          </ion-card-content>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-card>
+
+        <ion-card
+          class="m-0 rounded-xl shadow-card dark:shadow-card-dark bg-white dark:bg-dark-bg-card cursor-pointer"
+          (click)="viewFavorites()"
+        >
+          <ion-card-content class="p-4 text-center">
+            <ion-icon
+              name="heart-outline"
+              class="text-2xl text-food-orange dark:text-food-orange-dark mb-2"
+            ></ion-icon>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">
+              Favorites
+            </div>
+          </ion-card-content>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-card>
+      </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          Recent Orders
+        </h3>
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="viewOrderHistory()"
+          class="text-food-orange dark:text-food-orange-dark"
+        >
+          View All
+        </ion-button>
+      </div>
+
+      <ion-card
+        class="m-0 rounded-2xl shadow-card dark:shadow-card-dark bg-white dark:bg-dark-bg-card"
+      >
+        <ion-card-content class="p-0">
+          <div
+            *ngFor="let order of recentOrders; let last = last"
+            class="p-4"
+            [class.border-b]="!last"
+            [class.border-gray-100]="!last"
+            [class.dark:border-gray-700]="!last"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">
+                  {{order.restaurantName}}
+                </h4>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                  {{order.items.join(', ')}}
+                </p>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    {{formatDate(order.date)}}
+                  </span>
+                  <ion-badge
+                    class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs"
+                  >
+                    {{order.status}}
+                  </ion-badge>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-gray-900 dark:text-white">
+                  ${{order.total.toFixed(2)}}
+                </div>
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  class="h-8 text-food-orange dark:text-food-orange-dark"
+                >
+                  Reorder
+                </ion-button>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Settings & Preferences -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">
+        Settings & Preferences
+      </h3>
+
+      <ion-card
+        class="m-0 rounded-2xl shadow-card dark:shadow-card-dark bg-white dark:bg-dark-bg-card"
+      >
+        <ion-card-content class="p-0">
+          <!-- Dark Mode Toggle -->
+          <div
+            class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700"
+          >
+            <div class="flex items-center gap-3">
+              <ion-icon
+                [name]="themeService.isDarkMode ? 'moon-outline' : 'sunny-outline'"
+                class="text-xl text-food-orange dark:text-food-orange-dark"
+              >
+              </ion-icon>
+              <div>
+                <div class="font-medium text-gray-900 dark:text-white">
+                  Dark Mode
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">
+                  Toggle app theme
+                </div>
+              </div>
+            </div>
+            <ion-toggle
+              [checked]="themeService.isDarkMode"
+              (ionChange)="toggleTheme()"
+              style="
+                --track-background-checked: #ff6b35;
+                --handle-background-checked: white;
+              "
+            >
+            </ion-toggle>
+          </div>
+
+          <!-- Notifications Toggle -->
+          <div
+            class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700"
+          >
+            <div class="flex items-center gap-3">
+              <ion-icon
+                name="notifications-outline"
+                class="text-xl text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <div>
+                <div class="font-medium text-gray-900 dark:text-white">
+                  Push Notifications
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">
+                  Order updates & promotions
+                </div>
+              </div>
+            </div>
+            <ion-toggle
+              [(ngModel)]="notificationsEnabled"
+              (ionChange)="toggleNotifications()"
+              style="
+                --track-background-checked: #ff6b35;
+                --handle-background-checked: white;
+              "
+            >
+            </ion-toggle>
+          </div>
+
+          <!-- Email Notifications Toggle -->
+          <div
+            class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700"
+          >
+            <div class="flex items-center gap-3">
+              <ion-icon
+                name="mail-outline"
+                class="text-xl text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <div>
+                <div class="font-medium text-gray-900 dark:text-white">
+                  Email Notifications
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">
+                  Receipts & offers via email
+                </div>
+              </div>
+            </div>
+            <ion-toggle
+              [(ngModel)]="emailNotifications"
+              (ionChange)="toggleEmailNotifications()"
+              style="
+                --track-background-checked: #ff6b35;
+                --handle-background-checked: white;
+              "
+            >
+            </ion-toggle>
+          </div>
+
+          <!-- Location Services Toggle -->
+          <div class="flex items-center justify-between p-4">
+            <div class="flex items-center gap-3">
+              <ion-icon
+                name="location-outline"
+                class="text-xl text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <div>
+                <div class="font-medium text-gray-900 dark:text-white">
+                  Location Services
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">
+                  For better delivery experience
+                </div>
+              </div>
+            </div>
+            <ion-toggle
+              [(ngModel)]="locationServices"
+              (ionChange)="toggleLocationServices()"
+              style="
+                --track-background-checked: #ff6b35;
+                --handle-background-checked: white;
+              "
+            >
+            </ion-toggle>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Menu Items -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">
+        Account
+      </h3>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-0">
+          <ion-list>
+            <!-- Payment Methods -->
+            <ion-item button (click)="managePaymentMethods()">
+              <ion-icon
+                name="card-outline"
+                slot="start"
+                class="text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <ion-label>
+                <h3 class="font-medium">Payment Methods</h3>
+                <p>Manage cards & payment options</p>
+              </ion-label>
+            </ion-item>
+
+            <!-- Delivery Addresses -->
+            <ion-item button (click)="manageAddresses()">
+              <ion-icon
+                name="location-outline"
+                slot="start"
+                class="text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <ion-label>
+                <h3 class="font-medium">Delivery Addresses</h3>
+                <p>Manage saved addresses</p>
+              </ion-label>
+            </ion-item>
+
+            <!-- Order History -->
+            <ion-item button (click)="viewOrderHistory()">
+              <ion-icon
+                name="time-outline"
+                slot="start"
+                class="text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <ion-label>
+                <h3 class="font-medium">Order History</h3>
+                <p>View all past orders</p>
+              </ion-label>
+              <ion-badge>{{user.totalOrders}}</ion-badge>
+            </ion-item>
+
+            <!-- Help & Support -->
+            <ion-item button (click)="openSupport()">
+              <ion-icon
+                name="help-circle"
+                slot="start"
+                class="text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <ion-label>
+                <h3 class="font-medium">Help & Support</h3>
+                <p>FAQs, contact us</p>
+              </ion-label>
+            </ion-item>
+
+            <!-- Privacy & Security -->
+            <ion-item button (click)="openSettings()">
+              <ion-icon
+                name="shield-outline"
+                slot="start"
+                class="text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+              <ion-label>
+                <h3 class="font-medium">Privacy & Security</h3>
+                <p>Data & account security</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Logout Button -->
+    <div class="pb-4">
+      <ion-button
+        expand="block"
+        fill="outline"
+        size="large"
+        (click)="logout()"
+        class="rounded-2xl h-14 text-red-500 dark:text-red-400"
+        style="
+          --border-color: #ef4444;
+          --border-width: 2px;
+          --color: #ef4444;
+          --color-hover: white;
+          --background-hover: #ef4444;
+        "
+      >
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        <span class="font-semibold">Sign Out</span>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

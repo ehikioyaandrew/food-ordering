@@ -1,0 +1,31 @@
+{
+  "name": "multi-restaurant-platform",
+  "version": "1.0.0",
+  "description": "Multi-tenant restaurant ordering platform with mobile, web, and admin applications",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "scripts": {
+    "start:super-admin": "yarn workspace @restaurant-platform/super-admin start",
+    "start:restaurant-admin": "yarn workspace @restaurant-platform/restaurant-admin start",
+    "start:customer-mobile": "yarn workspace @restaurant-platform/customer-mobile start",
+    "start:customer-web": "yarn workspace @restaurant-platform/customer-web start",
+    "start:api": "yarn workspace @restaurant-platform/api start:dev",
+    "build:all": "yarn workspaces run build",
+    "test:all": "yarn workspaces run test",
+    "lint:all": "yarn workspaces run lint",
+    "dev:all": "concurrently \"yarn start:api\" \"yarn start:super-admin\" \"yarn start:customer-mobile\""
+  },
+  "devDependencies": {
+    "@angular/cli": "^17.0.0",
+    "@ionic/cli": "^7.0.0",
+    "concurrently": "^8.2.0",
+    "lerna": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
+  }
+}

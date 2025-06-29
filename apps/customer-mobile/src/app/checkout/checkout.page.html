@@ -1,0 +1,316 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        (click)="goBack()"
+        text=""
+        icon="arrow-back"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <div class="flex items-center gap-2">
+        <ion-icon name="receipt" class="text-lg"></ion-icon>
+        <span class="font-semibold">Checkout</span>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-gray-50 dark:bg-dark-bg">
+  <ion-header collapse="condense" class="dark:bg-dark-bg">
+    <ion-toolbar class="dark:bg-dark-bg">
+      <ion-title size="large" class="text-gray-900 dark:text-white">
+        Checkout
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Checkout Content -->
+  <div class="px-4 pb-4">
+    <!-- Order Summary -->
+    <div class="mb-6 pt-4">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Order Summary
+      </h2>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <!-- Restaurant Info -->
+          <div
+            class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-gray-700"
+          >
+            <ion-icon
+              name="restaurant"
+              class="text-2xl text-food-orange dark:text-food-orange-dark"
+            ></ion-icon>
+            <div>
+              <h3 class="font-bold text-gray-900 dark:text-white">
+                {{cartItems[0]?.restaurantName}}
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300">
+                {{totalItems}} items • Estimated {{estimatedDeliveryTime}}
+              </p>
+            </div>
+          </div>
+
+          <!-- Order Items -->
+          <div class="space-y-3">
+            <div *ngFor="let item of cartItems" class="flex items-center gap-3">
+              <div
+                class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0"
+              >
+                <ion-img
+                  [src]="item.image"
+                  [alt]="item.name"
+                  class="w-full h-full object-cover"
+                ></ion-img>
+              </div>
+
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-medium text-gray-900 dark:text-white text-sm">
+                    {{item.name}}
+                  </h4>
+                  <ion-chip
+                    *ngIf="item.isVegetarian"
+                    class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs h-5"
+                  >
+                    🌱
+                  </ion-chip>
+                </div>
+                <div class="flex items-center justify-between mt-1">
+                  <span class="text-xs text-gray-500 dark:text-gray-400"
+                    >Qty: {{item.quantity}}</span
+                  >
+                  <span class="font-semibold text-gray-900 dark:text-white"
+                    >${{(item.price * item.quantity).toFixed(2)}}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Delivery Address -->
+    <div class="mb-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Delivery Address
+      </h2>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <div class="flex items-start gap-3">
+            <div
+              class="w-10 h-10 bg-food-orange/10 dark:bg-food-orange-dark/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+            >
+              <ion-icon
+                name="location"
+                class="text-lg text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-gray-900 dark:text-white">
+                  {{selectedAddress?.title}}
+                </h3>
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  (click)="editAddress()"
+                  class="text-food-orange dark:text-food-orange-dark"
+                >
+                  Change
+                </ion-button>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                {{selectedAddress?.address}}
+              </p>
+              <div class="flex items-center gap-2">
+                <ion-icon
+                  name="time"
+                  class="text-sm text-green-600 dark:text-green-400"
+                ></ion-icon>
+                <span
+                  class="text-sm text-green-600 dark:text-green-400 font-medium"
+                >
+                  Delivery: {{getDeliveryTime()}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Payment Method -->
+    <div class="mb-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Payment Method
+      </h2>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-0">
+          <ion-radio-group
+            [(ngModel)]="selectedPaymentMethod"
+            (ionChange)="onPaymentMethodChange($event.detail.value)"
+          >
+            <div
+              *ngFor="let method of paymentMethods; let last = last"
+              class="p-4"
+              [class.border-b]="!last"
+              [class.border-gray-100]="!last"
+              [class.dark:border-gray-700]="!last"
+            >
+              <ion-item class="--background: transparent">
+                <ion-radio
+                  slot="start"
+                  [value]="method.id"
+                  style="--color-checked: #ff6b35"
+                ></ion-radio>
+                <ion-icon
+                  [name]="method.icon"
+                  slot="start"
+                  class="text-xl text-food-orange dark:text-food-orange-dark ml-3"
+                ></ion-icon>
+                <ion-label class="ml-3">
+                  <h3 class="font-medium text-gray-900 dark:text-white">
+                    {{method.name}}
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-300">
+                    {{method.details}}
+                  </p>
+                </ion-label>
+                <ion-badge
+                  *ngIf="method.isDefault"
+                  class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                >
+                  Default
+                </ion-badge>
+              </ion-item>
+            </div>
+          </ion-radio-group>
+
+          <!-- Add Payment Method -->
+          <div class="p-4 border-t border-gray-100 dark:border-gray-700">
+            <ion-button
+              fill="clear"
+              expand="block"
+              (click)="addPaymentMethod()"
+              class="text-food-orange dark:text-food-orange-dark"
+            >
+              <ion-icon name="add" slot="start"></ion-icon>
+              Add New Payment Method
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Order Notes -->
+    <div class="mb-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Special Instructions
+      </h2>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <ion-textarea
+            [(ngModel)]="orderNotes"
+            placeholder="Add delivery instructions, dietary requirements, etc."
+            rows="3"
+            class="bg-gray-50 dark:bg-gray-700 rounded-xl"
+            style="
+              --padding-start: 16px;
+              --padding-top: 12px;
+              --padding-bottom: 12px;
+            "
+          >
+          </ion-textarea>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Order Total -->
+    <div class="mb-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Order Total
+      </h2>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600 dark:text-gray-300">Subtotal</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >${{subtotal.toFixed(2)}}</span
+              >
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600 dark:text-gray-300">Delivery Fee</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >${{deliveryFee.toFixed(2)}}</span
+              >
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600 dark:text-gray-300">Tax & Fees</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >${{tax.toFixed(2)}}</span
+              >
+            </div>
+
+            <div
+              *ngIf="promoDiscount > 0"
+              class="flex justify-between items-center text-green-600 dark:text-green-400"
+            >
+              <span>Discount ({{appliedPromo?.code}})</span>
+              <span class="font-medium">-${{promoDiscount.toFixed(2)}}</span>
+            </div>
+
+            <hr class="border-gray-200 dark:border-gray-600" />
+
+            <div class="flex justify-between items-center text-lg font-bold">
+              <span class="text-gray-900 dark:text-white">Total</span>
+              <span class="text-food-orange dark:text-food-orange-dark"
+                >${{total.toFixed(2)}}</span
+              >
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Security Notice -->
+    <div class="mb-6">
+      <div
+        class="flex items-center gap-2 justify-center text-gray-500 dark:text-gray-400"
+      >
+        <ion-icon name="lock-closed" class="text-sm"></ion-icon>
+        <span class="text-xs"
+          >Your payment information is secure and encrypted</span
+        >
+      </div>
+    </div>
+
+    <!-- Place Order Button -->
+    <div class="pb-4">
+      <ion-button
+        expand="block"
+        size="large"
+        (click)="placeOrder()"
+        class="rounded-2xl h-14"
+        style="
+          --background: #ff6b35;
+          --background-activated: #ff5722;
+          --color: white;
+        "
+      >
+        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+        <span class="font-semibold">Place Order • ${{total.toFixed(2)}}</span>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

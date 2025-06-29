@@ -1,0 +1,184 @@
+<!-- Simple Tailwind Test Dashboard -->
+<div class="min-h-screen bg-gray-100 p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        🏪 Restaurant Platform
+      </h1>
+      <span
+        class="inline-block px-3 py-1 text-sm font-semibold text-purple-600 bg-purple-100 rounded-full"
+        >Super Admin</span
+      >
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div
+        class="bg-white rounded-lg shadow p-6 hover:shadow-xl transition-shadow"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Active Restaurants</p>
+            <p class="text-2xl font-bold text-green-600">127</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center"
+          >
+            <span class="text-green-600 text-lg">🏠</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-white rounded-lg shadow p-6 hover:shadow-xl transition-shadow"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Total Orders</p>
+            <p class="text-2xl font-bold text-blue-600">8,429</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+          >
+            <span class="text-blue-600 text-lg">🛒</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-white rounded-lg shadow p-6 hover:shadow-xl transition-shadow"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Revenue</p>
+            <p class="text-2xl font-bold text-purple-600">$94,251</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center"
+          >
+            <span class="text-purple-600 text-lg">📈</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-white rounded-lg shadow p-6 hover:shadow-xl transition-shadow"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Active Users</p>
+            <p class="text-2xl font-bold text-orange-600">12,847</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center"
+          >
+            <span class="text-orange-600 text-lg">👥</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Recent Restaurants -->
+      <div class="lg:col-span-2 bg-white rounded-lg shadow">
+        <div class="p-6 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-800">
+            Recent Restaurants
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div
+              class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-red-400 to-pink-500 rounded-full flex items-center justify-center text-white text-lg"
+              >
+                🍕
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-800">
+                  Mario's Pizza Palace
+                </h4>
+                <p class="text-sm text-gray-600">Joined 2 hours ago</p>
+              </div>
+              <span
+                class="px-3 py-1 text-xs font-medium text-green-600 bg-green-100 rounded-full"
+                >Active</span
+              >
+            </div>
+
+            <div
+              class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white text-lg"
+              >
+                🍔
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-800">Burger Express</h4>
+                <p class="text-sm text-gray-600">Joined 1 day ago</p>
+              </div>
+              <span
+                class="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full"
+                >Pending</span
+              >
+            </div>
+
+            <div
+              class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-lg"
+              >
+                🥗
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-800">Fresh Salad Co.</h4>
+                <p class="text-sm text-gray-600">Joined 3 days ago</p>
+              </div>
+              <span
+                class="px-3 py-1 text-xs font-medium text-green-600 bg-green-100 rounded-full"
+                >Active</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="p-6 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-800">Quick Actions</h3>
+        </div>
+        <div class="p-6">
+          <div class="space-y-3">
+            <button
+              class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              ➕ Add New Restaurant
+            </button>
+            <button
+              class="w-full border border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              ⚙️ Platform Settings
+            </button>
+            <button
+              class="w-full border border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              📊 View Analytics
+            </button>
+            <button
+              class="w-full border border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              🔒 Security Logs
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,281 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{restaurant.name}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="toggleFavorite()">
+        <ion-icon
+          [name]="restaurant.isFavorite ? 'heart' : 'heart-outline'"
+          [class]="restaurant.isFavorite ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'"
+        >
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-gray-50 dark:bg-dark-bg">
+  <!-- Restaurant Hero Section -->
+  <div class="relative">
+    <div class="h-64 bg-gray-200 dark:bg-gray-700">
+      <ion-img
+        [src]="restaurant.image"
+        [alt]="restaurant.name"
+        class="w-full h-full object-cover"
+      >
+      </ion-img>
+    </div>
+
+    <!-- Restaurant Info Overlay -->
+    <div
+      class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4"
+    >
+      <div class="text-white">
+        <h1 class="text-2xl font-bold mb-2">{{restaurant.name}}</h1>
+        <div class="flex items-center gap-4 text-sm">
+          <div class="flex items-center gap-1">
+            <ion-icon name="star" class="text-yellow-400"></ion-icon>
+            <span>{{restaurant.rating}}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <ion-icon name="time"></ion-icon>
+            <span>{{restaurant.deliveryTime}}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <ion-icon name="location"></ion-icon>
+            <span>{{restaurant.distance}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restaurant Details Card -->
+  <div class="p-4">
+    <ion-card
+      class="m-0 rounded-2xl shadow-card dark:shadow-card-dark bg-white dark:bg-dark-bg-card"
+    >
+      <ion-card-content class="p-4">
+        <div class="mb-4">
+          <p class="text-gray-600 dark:text-gray-300 mb-3">
+            {{restaurant.description}}
+          </p>
+
+          <!-- Cuisine Tags -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            <ion-chip
+              *ngFor="let cuisine of restaurant.cuisine"
+              class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-sm"
+            >
+              {{cuisine}}
+            </ion-chip>
+          </div>
+
+          <!-- Restaurant Status & Info -->
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div class="flex items-center gap-2">
+              <ion-icon
+                name="checkmark-circle"
+                [class]="restaurant.isOpen ? 'text-green-500' : 'text-red-500'"
+              >
+              </ion-icon>
+              <span class="text-gray-700 dark:text-gray-200">
+                {{restaurant.isOpen ? restaurant.openingHours : 'Closed'}}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <ion-icon name="bag" class="text-gray-500"></ion-icon>
+              <span class="text-gray-700 dark:text-gray-200">
+                Min. order ${{restaurant.minOrder}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Menu Categories -->
+  <div class="px-4 mb-4">
+    <ion-segment
+      [value]="selectedCategory"
+      (ionChange)="onCategoryChange($event)"
+      scrollable="true"
+      class="bg-gray-100 dark:bg-dark-bg-secondary rounded-2xl p-1"
+    >
+      <ion-segment-button
+        *ngFor="let category of categories"
+        [value]="category.value"
+        class="rounded-xl min-w-0"
+      >
+        <ion-label class="font-medium text-sm">{{category.label}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Menu Items Grid -->
+  <div class="px-4 pb-20">
+    <ion-grid class="p-0">
+      <ion-row>
+        <ion-col size="12" class="p-2" *ngFor="let item of filteredMenuItems">
+          <ion-card
+            class="m-0 rounded-2xl shadow-card dark:shadow-card-dark transition-all duration-300 border-0 overflow-hidden bg-white dark:bg-dark-bg-card"
+          >
+            <div class="flex">
+              <!-- Item Image -->
+              <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 flex-shrink-0">
+                <ion-img
+                  [src]="item.image"
+                  [alt]="item.name"
+                  class="w-full h-full object-cover"
+                >
+                </ion-img>
+              </div>
+
+              <!-- Item Details -->
+              <ion-card-content class="flex-1 p-4">
+                <div class="flex justify-between items-start mb-2">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <ion-card-title
+                        class="text-base font-bold text-gray-900 dark:text-white m-0"
+                      >
+                        {{item.name}}
+                      </ion-card-title>
+                      <!-- Item Badges -->
+                      <ion-chip
+                        *ngIf="item.isPopular"
+                        class="bg-food-orange dark:bg-food-orange-dark text-white text-xs px-2 py-1"
+                      >
+                        Popular
+                      </ion-chip>
+                      <ion-chip
+                        *ngIf="item.isVegetarian"
+                        class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs px-2 py-1"
+                      >
+                        🌱
+                      </ion-chip>
+                    </div>
+
+                    <p
+                      class="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2"
+                    >
+                      {{item.description}}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Add to Cart Controls -->
+                <div class="flex items-center justify-between mt-4">
+                  <div class="text-lg font-bold text-gray-900 dark:text-white">
+                    ${{item.price.toFixed(2)}}
+                  </div>
+
+                  <!-- Add to Cart Button -->
+                  <div
+                    *ngIf="getItemQuantity(item.id) === 0; else quantityControls"
+                  >
+                    <ion-button
+                      size="default"
+                      fill="solid"
+                      (click)="addToCart(item)"
+                      class="rounded-full h-10 px-6 min-w-[100px]"
+                      style="
+                        --background: #ff6b35;
+                        --background-activated: #ff5722;
+                        --background-hover: #ff8a65;
+                        --color: white;
+                        --border-radius: 20px;
+                      "
+                    >
+                      <ion-icon
+                        name="add"
+                        slot="start"
+                        class="text-sm"
+                      ></ion-icon>
+                      <span class="font-medium">Add</span>
+                    </ion-button>
+                  </div>
+
+                  <!-- Quantity Controls -->
+                  <ng-template #quantityControls>
+                    <div
+                      class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full h-10 px-2"
+                    >
+                      <ion-button
+                        size="small"
+                        fill="clear"
+                        (click)="removeFromCart(item)"
+                        class="h-8 w-8 rounded-full flex items-center justify-center"
+                        style="
+                          --color: #ff6b35;
+                          --background-hover: rgba(255, 107, 53, 0.1);
+                        "
+                      >
+                        <ion-icon name="remove" class="text-base"></ion-icon>
+                      </ion-button>
+
+                      <div
+                        class="flex items-center justify-center min-w-[40px] h-8 mx-1"
+                      >
+                        <span
+                          class="font-bold text-base text-gray-900 dark:text-white"
+                        >
+                          {{getItemQuantity(item.id)}}
+                        </span>
+                      </div>
+
+                      <ion-button
+                        size="small"
+                        fill="clear"
+                        (click)="addToCart(item)"
+                        class="h-8 w-8 rounded-full flex items-center justify-center"
+                        style="
+                          --color: #ff6b35;
+                          --background-hover: rgba(255, 107, 53, 0.1);
+                        "
+                      >
+                        <ion-icon name="add" class="text-base"></ion-icon>
+                      </ion-button>
+                    </div>
+                  </ng-template>
+                </div>
+              </ion-card-content>
+            </div>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Floating Cart Button -->
+  <ion-fab
+    vertical="bottom"
+    horizontal="center"
+    slot="fixed"
+    *ngIf="cartCount > 0"
+  >
+    <ion-fab-button
+      (click)="goToCart()"
+      style="
+        --background: #ff6b35;
+        --background-activated: #ff5722;
+        --color: white;
+        width: 280px;
+        height: 56px;
+        --border-radius: 28px;
+      "
+      class="shadow-lg"
+    >
+      <div class="flex items-center justify-between w-full px-4">
+        <div class="flex items-center gap-2">
+          <ion-icon name="bag" class="text-lg"></ion-icon>
+          <span class="font-medium">{{cartCount}} items</span>
+        </div>
+        <div class="font-bold text-lg">${{cartTotal.toFixed(2)}}</div>
+      </div>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
