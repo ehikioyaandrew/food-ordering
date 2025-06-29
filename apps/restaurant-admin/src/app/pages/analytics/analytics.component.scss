@@ -1,0 +1,381 @@
+// Analytics Dashboard Styles
+.analytics-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+
+  @apply dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800;
+}
+
+// Card animations
+.card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    @apply dark:shadow-2xl dark:shadow-gray-900/20;
+  }
+}
+
+// Metric cards with subtle animations
+.metric-card {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+// Chart animations
+.chart-container {
+  position: relative;
+
+  svg {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+
+  path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 2s ease-in-out forwards;
+  }
+
+  circle {
+    opacity: 0;
+    animation: fadeInCircle 0.5s ease-in-out forwards;
+    animation-delay: 2s;
+  }
+}
+
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeInCircle {
+  to {
+    opacity: 1;
+  }
+}
+
+// Progress bars with gradients
+.progress-bar {
+  background: linear-gradient(90deg, #ff6b35, #ff8c42);
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Status badges
+.status-badge {
+  position: relative;
+
+  &.delivered {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+
+  &.preparing {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+  }
+
+  &.pending {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+  }
+
+  &.cancelled {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+  }
+}
+
+// Popular items list
+.popular-item {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+
+  &:hover {
+    background: rgba(255, 107, 53, 0.05);
+    transform: translateX(4px);
+
+    @apply dark:bg-food-orange/10;
+  }
+
+  img {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.1);
+  }
+}
+
+// Performance metrics with icon animations
+.performance-metric {
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 107, 53, 0.05);
+
+    .metric-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+  }
+
+  .metric-icon {
+    transition: transform 0.3s ease;
+  }
+}
+
+// Customer insights with animated progress
+.customer-progress {
+  position: relative;
+
+  .progress-fill {
+    transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-delay: 0.5s;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .analytics-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+  }
+
+  .chart-container {
+    height: 200px;
+  }
+}
+
+// Dark mode specific styles
+@media (prefers-color-scheme: dark) {
+  .analytics-container {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  }
+
+  .card {
+    background: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .progress-bar {
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+  }
+}
+
+// Loading states
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+
+  @apply dark:from-gray-700 dark:via-gray-600 dark:to-gray-700;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Hover effects for interactive elements
+.interactive-element {
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Custom scrollbar for overflow areas
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ff6b35;
+    border-radius: 3px;
+
+    &:hover {
+      background: #ff5722;
+    }
+  }
+}
+
+// Tooltip Styles
+.tooltip-container {
+  position: relative;
+
+  &:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-5px);
+  }
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  pointer-events: none;
+  max-width: 250px;
+  white-space: normal;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  // Arrow pointing down
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+  }
+
+  // Dark mode tooltip
+  @apply dark:bg-gray-700 dark:text-gray-100;
+
+  &::after {
+    @apply dark:border-t-gray-700;
+  }
+}
+
+// Alternative tooltip positioning for items near edges
+.tooltip-container:nth-child(1) .tooltip,
+.tooltip-container:nth-child(2) .tooltip {
+  left: 0;
+  transform: translateX(0) translateY(-10px);
+
+  &::after {
+    left: 20px;
+    transform: translateX(0);
+  }
+}
+
+.tooltip-container:nth-last-child(1) .tooltip,
+.tooltip-container:nth-last-child(2) .tooltip {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(-10px);
+
+  &::after {
+    left: auto;
+    right: 20px;
+    transform: translateX(0);
+  }
+}
+
+// Chart data point tooltips
+circle[title] {
+  cursor: pointer;
+
+  &:hover {
+    r: 6;
+    filter: drop-shadow(0 2px 4px rgba(255, 107, 53, 0.3));
+  }
+}
+
+// Progress bar tooltips
+.tooltip-container [title] {
+  cursor: help;
+}

@@ -1,0 +1,1312 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center gap-4 mb-4">
+      <button
+        (click)="goBack()"
+        class="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+      >
+        <svg
+          class="w-5 h-5 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        Back to Dashboard
+      </button>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+      Staff Management
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mt-2">
+      Manage your team members, roles, and permissions
+    </p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+    <div class="card p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Active Staff</p>
+          <p class="text-2xl font-bold text-green-600">
+            {{ activeStaffCount }}
+          </p>
+        </div>
+        <div class="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-green-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Inactive Staff</p>
+          <p class="text-2xl font-bold text-gray-600">
+            {{ inactiveStaffCount }}
+          </p>
+        </div>
+        <div class="p-3 bg-gray-100 dark:bg-gray-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-gray-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total Staff</p>
+          <p class="text-2xl font-bold text-blue-600">
+            {{ staffMembers.length }}
+          </p>
+        </div>
+        <div class="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-blue-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A2.84 2.84 0 0 0 17.2 7H16.8c-1.1 0-2.09.63-2.76 1.37L11.54 8.4C11.2 8.78 10.65 9 10 9s-1.2-.22-1.54-.6L6.96 8.37C6.29 7.63 5.3 7 4.2 7H3.8c-1.26 0-2.42.83-2.96 2.37L8.5 16H4v6h16zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Roles</p>
+          <p class="text-2xl font-bold text-purple-600">{{ totalRoles }}</p>
+        </div>
+        <div class="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-purple-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Sections</p>
+          <p class="text-2xl font-bold text-indigo-600">
+            {{ activeSections.length }}
+          </p>
+        </div>
+        <div class="p-3 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-indigo-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions Bar -->
+  <div
+    class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6"
+  >
+    <!-- Search and Filters -->
+    <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+      <!-- Search -->
+      <div class="relative">
+        <svg
+          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search staff..."
+          class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+        />
+      </div>
+
+      <!-- Status Filter -->
+      <select
+        [(ngModel)]="statusFilter"
+        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+      >
+        <option value="all">All Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+        <option value="suspended">Suspended</option>
+      </select>
+
+      <!-- Role Filter -->
+      <select
+        [(ngModel)]="roleFilter"
+        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+      >
+        <option value="all">All Roles</option>
+        <option *ngFor="let role of roles" [value]="role.id">
+          {{ role.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Add Staff Button -->
+    <div class="flex gap-3">
+      <button
+        (click)="openSectionModal()"
+        class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-2"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 11H5m14-7v14a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2zM5 11h14"
+          />
+        </svg>
+        Manage Sections
+      </button>
+
+      <button
+        (click)="openAddStaffModal()"
+        class="btn-primary px-6 py-2 bg-food-orange hover:bg-food-orange/90 text-white rounded-lg transition-colors flex items-center gap-2"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
+        </svg>
+        Add Staff Member
+      </button>
+    </div>
+  </div>
+
+  <!-- Staff List -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div
+      *ngFor="let staff of filteredStaff"
+      class="card p-6 hover:shadow-lg transition-shadow"
+    >
+      <!-- Staff Header -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <img
+            [src]="staff.avatar"
+            [alt]="staff.name"
+            class="w-12 h-12 rounded-full object-cover"
+          />
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white">
+              {{ staff.name }}
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {{ staff.email }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Status Badge -->
+        <span
+          [class]="getStatusColor(staff.status)"
+          class="px-2 py-1 rounded-full text-xs font-medium capitalize"
+        >
+          {{ staff.status }}
+        </span>
+      </div>
+
+      <!-- Role and Info -->
+      <div class="space-y-3 mb-4">
+        <div class="flex items-center gap-2">
+          <span [class]="staff.role.color" class="w-3 h-3 rounded-full"></span>
+          <span class="text-sm font-medium text-gray-900 dark:text-white">{{
+            staff.role.name
+          }}</span>
+        </div>
+
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          <p><span class="font-medium">Phone:</span> {{ staff.phone }}</p>
+          <p>
+            <span class="font-medium">Joined:</span>
+            {{ formatDate(staff.joinDate) }}
+          </p>
+          <p><span class="font-medium">Shift:</span> {{ staff.shift }}</p>
+          <p>
+            <span class="font-medium">Salary:</span>
+            {{ formatSalary(staff.salary) }}
+          </p>
+        </div>
+
+        <!-- Permissions -->
+        <div>
+          <p class="text-sm font-medium text-gray-900 dark:text-white mb-1">
+            Permissions ({{ staff.permissions.length }})
+          </p>
+          <div class="flex flex-wrap gap-1">
+            <span
+              *ngFor="let permission of staff.permissions.slice(0, 3)"
+              class="px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 rounded text-xs"
+            >
+              {{ permission.category }}
+            </span>
+            <span
+              *ngIf="staff.permissions.length > 3"
+              class="px-2 py-1 bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 rounded text-xs"
+            >
+              +{{ staff.permissions.length - 3 }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Assigned Sections -->
+        <div>
+          <p class="text-sm font-medium text-gray-900 dark:text-white mb-1">
+            Access Sections ({{ staff.assignedSections.length }})
+          </p>
+          <div class="flex flex-wrap gap-1">
+            <span
+              *ngFor="let section of staff.assignedSections.slice(0, 3)"
+              [class]="section.color"
+              class="px-2 py-1 text-white rounded text-xs flex items-center gap-1"
+            >
+              <span>{{ section.icon }}</span>
+              {{ section.name }}
+            </span>
+            <span
+              *ngIf="staff.assignedSections.length > 3"
+              class="px-2 py-1 bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 rounded text-xs"
+            >
+              +{{ staff.assignedSections.length - 3 }}
+            </span>
+            <span
+              *ngIf="staff.assignedSections.length === 0"
+              class="px-2 py-1 bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 rounded text-xs"
+            >
+              No sections assigned
+            </span>
+          </div>
+        </div>
+
+        <!-- Last Login -->
+        <div
+          *ngIf="staff.lastLogin"
+          class="text-xs text-gray-500 dark:text-gray-500"
+        >
+          Last login: {{ staff.lastLogin }}
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div
+        class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-2">
+          <button
+            (click)="openEditStaffModal(staff)"
+            class="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+            title="Edit Staff"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+          </button>
+
+          <button
+            (click)="toggleStaffStatus(staff)"
+            [class]="
+              staff.status === 'active'
+                ? 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
+                : 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20'
+            "
+            class="p-2 rounded-lg transition-colors"
+            [title]="staff.status === 'active' ? 'Deactivate' : 'Activate'"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                *ngIf="staff.status === 'active'"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636a9 9 0 00-12.728 12.728"
+              />
+              <path
+                *ngIf="staff.status !== 'active'"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </button>
+
+          <button
+            (click)="deleteStaff(staff.id)"
+            class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            title="Delete Staff"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredStaff.length === 0" class="text-center py-12">
+    <svg
+      class="mx-auto h-12 w-12 text-gray-400"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+      />
+    </svg>
+    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">
+      No staff members found
+    </h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      Try adjusting your search or filters.
+    </p>
+  </div>
+</div>
+
+<!-- Add Staff Modal -->
+<div
+  *ngIf="showAddStaffModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+  >
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          Add New Staff Member
+        </h2>
+        <button
+          (click)="closeModals()"
+          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <form (ngSubmit)="addStaff()" class="space-y-4">
+        <!-- Basic Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Full Name *</label
+            >
+            <input
+              type="text"
+              [(ngModel)]="newStaff.name"
+              name="name"
+              required
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Email *</label
+            >
+            <input
+              type="email"
+              [(ngModel)]="newStaff.email"
+              name="email"
+              required
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Phone</label
+            >
+            <input
+              type="tel"
+              [(ngModel)]="newStaff.phone"
+              name="phone"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Join Date</label
+            >
+            <input
+              type="date"
+              [(ngModel)]="newStaff.joinDate"
+              name="joinDate"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Status</label
+            >
+            <select
+              [(ngModel)]="newStaff.status"
+              name="status"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Shift</label
+            >
+            <select
+              [(ngModel)]="newStaff.shift"
+              name="shift"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="Full-time">Full-time</option>
+              <option value="Morning">Morning</option>
+              <option value="Afternoon">Afternoon</option>
+              <option value="Evening">Evening</option>
+              <option value="Night">Night</option>
+              <option value="Flexible">Flexible</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Salary (₦)</label
+            >
+            <input
+              type="number"
+              [(ngModel)]="newStaff.salary"
+              name="salary"
+              min="0"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+        </div>
+
+        <!-- Role Selection -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Select Role *</label
+          >
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <button
+              *ngFor="let role of roles"
+              type="button"
+              (click)="selectRole(role)"
+              [class]="
+                selectedRole?.id === role.id
+                  ? 'ring-2 ring-food-orange border-food-orange'
+                  : 'border-gray-300 dark:border-gray-600'
+              "
+              class="p-3 border rounded-lg text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div class="flex items-center gap-2 mb-1">
+                <span [class]="role.color" class="w-3 h-3 rounded-full"></span>
+                <span class="font-medium text-gray-900 dark:text-white">{{
+                  role.name
+                }}</span>
+              </div>
+              <p class="text-xs text-gray-600 dark:text-gray-400">
+                {{ role.description }}
+              </p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Permissions -->
+        <div *ngIf="selectedRole">
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Permissions</label
+          >
+          <div
+            class="space-y-3 max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-3"
+          >
+            <div
+              *ngFor="
+                let category of [
+                  'Menu',
+                  'Orders',
+                  'Analytics',
+                  'Staff',
+                  'Finance',
+                  'Marketing',
+                  'Customers'
+                ] | slice : 0 : 7
+              "
+            >
+              <h4
+                class="font-medium text-sm text-gray-900 dark:text-white mb-2"
+              >
+                {{ category }}
+              </h4>
+              <div class="space-y-1 ml-4">
+                <label
+                  *ngFor="let permission of permissions | slice : 0 : 10"
+                  class="flex items-center gap-2 text-sm"
+                  [class.hidden]="permission.category !== category"
+                >
+                  <input
+                    type="checkbox"
+                    [checked]="hasPermission(permission)"
+                    (change)="togglePermission(permission)"
+                    class="w-4 h-4 text-food-orange focus:ring-food-orange border-gray-300 rounded"
+                  />
+                  <span class="text-gray-700 dark:text-gray-300">{{
+                    permission.description
+                  }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Assignment -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Access Sections</label
+          >
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+            Select which menu sections this staff member can access in the POS
+            system
+          </p>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <button
+              *ngFor="let section of activeSections"
+              type="button"
+              (click)="toggleSectionAssignment(section)"
+              [class]="
+                hasSectionAssignment(section)
+                  ? 'ring-2 ring-food-orange border-food-orange bg-orange-50 dark:bg-orange-900/20'
+                  : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+              "
+              class="p-3 border rounded-lg text-left transition-colors"
+            >
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-lg">{{ section.icon }}</span>
+                <span
+                  class="font-medium text-gray-900 dark:text-white text-sm"
+                  >{{ section.name }}</span
+                >
+              </div>
+              <p class="text-xs text-gray-600 dark:text-gray-400">
+                {{ section.description }}
+              </p>
+            </button>
+
+            <div
+              *ngIf="activeSections.length === 0"
+              class="col-span-full text-center py-4"
+            >
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                No active sections available
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            (click)="closeModals()"
+            class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-food-orange hover:bg-food-orange/90 text-white rounded-lg transition-colors"
+          >
+            Add Staff Member
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Staff Modal -->
+<div
+  *ngIf="showEditStaffModal && selectedStaff"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+  >
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          Edit Staff Member
+        </h2>
+        <button
+          (click)="closeModals()"
+          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <form (ngSubmit)="updateStaff()" class="space-y-4">
+        <!-- Basic Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Full Name *</label
+            >
+            <input
+              type="text"
+              [(ngModel)]="selectedStaff.name"
+              name="name"
+              required
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Email *</label
+            >
+            <input
+              type="email"
+              [(ngModel)]="selectedStaff.email"
+              name="email"
+              required
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Phone</label
+            >
+            <input
+              type="tel"
+              [(ngModel)]="selectedStaff.phone"
+              name="phone"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Join Date</label
+            >
+            <input
+              type="date"
+              [(ngModel)]="selectedStaff.joinDate"
+              name="joinDate"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Status</label
+            >
+            <select
+              [(ngModel)]="selectedStaff.status"
+              name="status"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Shift</label
+            >
+            <select
+              [(ngModel)]="selectedStaff.shift"
+              name="shift"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="Full-time">Full-time</option>
+              <option value="Morning">Morning</option>
+              <option value="Afternoon">Afternoon</option>
+              <option value="Evening">Evening</option>
+              <option value="Night">Night</option>
+              <option value="Flexible">Flexible</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Salary (₦)</label
+            >
+            <input
+              type="number"
+              [(ngModel)]="selectedStaff.salary"
+              name="salary"
+              min="0"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-food-orange focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+        </div>
+
+        <!-- Role Selection -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Role</label
+          >
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <button
+              *ngFor="let role of roles"
+              type="button"
+              (click)="selectRole(role)"
+              [class]="
+                selectedStaff.role.id === role.id
+                  ? 'ring-2 ring-food-orange border-food-orange'
+                  : 'border-gray-300 dark:border-gray-600'
+              "
+              class="p-3 border rounded-lg text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div class="flex items-center gap-2 mb-1">
+                <span [class]="role.color" class="w-3 h-3 rounded-full"></span>
+                <span class="font-medium text-gray-900 dark:text-white">{{
+                  role.name
+                }}</span>
+              </div>
+              <p class="text-xs text-gray-600 dark:text-gray-400">
+                {{ role.description }}
+              </p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Permissions -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Permissions</label
+          >
+          <div
+            class="space-y-3 max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-3"
+          >
+            <div
+              *ngFor="
+                let category of [
+                  'Menu',
+                  'Orders',
+                  'Analytics',
+                  'Staff',
+                  'Finance',
+                  'Marketing',
+                  'Customers'
+                ] | slice : 0 : 7
+              "
+            >
+              <h4
+                class="font-medium text-sm text-gray-900 dark:text-white mb-2"
+              >
+                {{ category }}
+              </h4>
+              <div class="space-y-1 ml-4">
+                <label
+                  *ngFor="let permission of permissions | slice : 0 : 10"
+                  class="flex items-center gap-2 text-sm"
+                  [class.hidden]="permission.category !== category"
+                >
+                  <input
+                    type="checkbox"
+                    [checked]="hasPermission(permission)"
+                    (change)="togglePermission(permission)"
+                    class="w-4 h-4 text-food-orange focus:ring-food-orange border-gray-300 rounded"
+                  />
+                  <span class="text-gray-700 dark:text-gray-300">{{
+                    permission.description
+                  }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Assignment -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Access Sections</label
+          >
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+            Select which menu sections this staff member can access in the POS
+            system
+          </p>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <button
+              *ngFor="let section of activeSections"
+              type="button"
+              (click)="toggleSectionAssignment(section)"
+              [class]="
+                hasSectionAssignment(section)
+                  ? 'ring-2 ring-food-orange border-food-orange bg-orange-50 dark:bg-orange-900/20'
+                  : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+              "
+              class="p-3 border rounded-lg text-left transition-colors"
+            >
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-lg">{{ section.icon }}</span>
+                <span
+                  class="font-medium text-gray-900 dark:text-white text-sm"
+                  >{{ section.name }}</span
+                >
+              </div>
+              <p class="text-xs text-gray-600 dark:text-gray-400">
+                {{ section.description }}
+              </p>
+            </button>
+
+            <div
+              *ngIf="activeSections.length === 0"
+              class="col-span-full text-center py-4"
+            >
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                No active sections available
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            (click)="closeModals()"
+            class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-food-orange hover:bg-food-orange/90 text-white rounded-lg transition-colors"
+          >
+            Update Staff Member
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Section Management Modal -->
+<div
+  *ngIf="showSectionModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+  >
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          Manage Sections
+        </h2>
+        <button
+          (click)="closeModals()"
+          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Add Section Button -->
+      <div class="mb-6">
+        <button
+          (click)="openAddSectionModal()"
+          class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-2"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+          Add New Section
+        </button>
+      </div>
+
+      <!-- Sections List -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+          *ngFor="let section of sections"
+          class="border border-gray-200 dark:border-gray-600 rounded-lg p-4"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">{{ section.icon }}</span>
+              <div>
+                <h3 class="font-semibold text-gray-900 dark:text-white">
+                  {{ section.name }}
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  {{ section.description }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <!-- Active/Inactive Toggle -->
+              <button
+                (click)="toggleSection(section.id)"
+                [class]="
+                  section.isActive
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                    : 'bg-gray-100 text-gray-600 dark:bg-gray-900/20 dark:text-gray-400'
+                "
+                class="px-2 py-1 rounded-full text-xs font-medium"
+              >
+                {{ section.isActive ? "Active" : "Inactive" }}
+              </button>
+
+              <!-- Delete Button -->
+              <button
+                (click)="deleteSection(section.id)"
+                class="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                title="Delete Section"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Staff Count -->
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            {{ getStaffCountForSection(section.id) }} staff members assigned
+          </div>
+        </div>
+
+        <div
+          *ngIf="sections.length === 0"
+          class="col-span-full text-center py-8"
+        >
+          <svg
+            class="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14-7v14a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2zM5 11h14"
+            />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">
+            No sections created
+          </h3>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Get started by creating your first section.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Section Modal -->
+<div
+  *ngIf="showAddSectionModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+>
+  <div class="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          Add New Section
+        </h2>
+        <button
+          (click)="closeModals()"
+          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <form (ngSubmit)="addSection()" class="space-y-4">
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Section Name *</label
+          >
+          <input
+            type="text"
+            [(ngModel)]="newSection.name"
+            name="name"
+            required
+            placeholder="e.g., Beverages, Hot Food, etc."
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Description *</label
+          >
+          <textarea
+            [(ngModel)]="newSection.description"
+            name="description"
+            required
+            rows="2"
+            placeholder="Brief description of what this section includes"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          ></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Icon</label
+            >
+            <input
+              type="text"
+              [(ngModel)]="newSection.icon"
+              name="icon"
+              placeholder="🍕"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Color</label
+            >
+            <select
+              [(ngModel)]="newSection.color"
+              name="color"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="bg-red-500">Red</option>
+              <option value="bg-blue-500">Blue</option>
+              <option value="bg-green-500">Green</option>
+              <option value="bg-yellow-500">Yellow</option>
+              <option value="bg-purple-500">Purple</option>
+              <option value="bg-pink-500">Pink</option>
+              <option value="bg-indigo-500">Indigo</option>
+              <option value="bg-orange-500">Orange</option>
+              <option value="bg-teal-500">Teal</option>
+              <option value="bg-gray-500">Gray</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            [(ngModel)]="newSection.isActive"
+            name="isActive"
+            id="isActive"
+            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+          />
+          <label
+            for="isActive"
+            class="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+          >
+            Set as active (available for assignment)
+          </label>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            (click)="closeModals()"
+            class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+          >
+            Add Section
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -18,4 +18,24 @@ export class DashboardComponent {
   navigateToOrders() {
     this.router.navigate(['/orders']);
   }
+
+  navigateToAnalytics() {
+    this.router.navigate(['/analytics']);
+  }
+
+  navigateToStaffManagement() {
+    this.router.navigate(['/staff-management']);
+  }
+
+  navigateToCustomers() {
+    this.router.navigate(['/customer-management']);
+  }
+
+  navigateToPromotions() {
+    this.router.navigate(['/promotions']);
+  }
+
+  navigateToSettings() {
+    this.router.navigate(['/settings']);
+  }
 }

@@ -1,0 +1,789 @@
+<!-- Analytics Header -->
+<div class="flex items-center justify-between mb-6">
+  <div class="flex items-center gap-4">
+    <button
+      (click)="goBack()"
+      class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+      title="Go back to dashboard"
+    >
+      <svg
+        class="w-5 h-5 text-gray-600 dark:text-gray-400"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+        />
+      </svg>
+    </button>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Analytics Dashboard
+      </h1>
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Insights and performance metrics for your restaurant
+      </p>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <select
+      [(ngModel)]="selectedPeriod"
+      (change)="onPeriodChange(selectedPeriod)"
+      class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-food-orange focus:border-transparent"
+      title="Select time period for analytics data"
+    >
+      <option value="7days">Last 7 days</option>
+      <option value="30days">Last 30 days</option>
+      <option value="90days">Last 90 days</option>
+    </select>
+  </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow tooltip-container"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ formatPrice(totalRevenue) }}
+        </p>
+      </div>
+      <div class="p-3 bg-food-orange/10 rounded-lg" title="Revenue indicator">
+        <svg
+          class="w-6 h-6 text-food-orange"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="mt-4 flex items-center text-sm">
+      <span
+        class="font-medium"
+        [ngClass]="{
+          'text-green-600': revenueGrowth >= 0,
+          'text-red-600': revenueGrowth < 0
+        }"
+        [title]="
+          'Revenue growth compared to previous ' +
+          selectedPeriod.replace('days', ' days')
+        "
+      >
+        {{ revenueGrowth >= 0 ? "+" : "" }}{{ revenueGrowth.toFixed(1) }}%
+      </span>
+      <span class="text-gray-500 dark:text-gray-400 ml-1"
+        >vs previous period</span
+      >
+    </div>
+    <div class="tooltip">Total revenue for the selected time period</div>
+  </div>
+
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow tooltip-container"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ totalOrders }}
+        </p>
+      </div>
+      <div class="p-3 bg-blue-500/10 rounded-lg" title="Orders indicator">
+        <svg
+          class="w-6 h-6 text-blue-600"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="mt-4 flex items-center text-sm">
+      <span
+        class="text-green-600 font-medium"
+        title="12% increase from previous period"
+        >+12%</span
+      >
+      <span class="text-gray-500 dark:text-gray-400 ml-1"
+        >vs previous period</span
+      >
+    </div>
+    <div class="tooltip">Total number of orders received</div>
+  </div>
+
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow tooltip-container"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Avg Order Value</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ formatPrice(averageOrderValue) }}
+        </p>
+      </div>
+      <div
+        class="p-3 bg-green-500/10 rounded-lg"
+        title="Average order value indicator"
+      >
+        <svg
+          class="w-6 h-6 text-green-600"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="mt-4 flex items-center text-sm">
+      <span
+        class="text-green-600 font-medium"
+        title="5% increase from previous period"
+        >+5%</span
+      >
+      <span class="text-gray-500 dark:text-gray-400 ml-1"
+        >vs previous period</span
+      >
+    </div>
+    <div class="tooltip">Average amount spent per order</div>
+  </div>
+
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow tooltip-container"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Customer Rating</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ performanceMetrics[2].value || 4.7 }}/5
+        </p>
+      </div>
+      <div
+        class="p-3 bg-yellow-500/10 rounded-lg"
+        title="Customer satisfaction rating"
+      >
+        <svg
+          class="w-6 h-6 text-yellow-600"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="mt-4 flex items-center text-sm">
+      <span
+        class="text-green-600 font-medium"
+        title="0.2 point increase from previous period"
+        >+0.2</span
+      >
+      <span class="text-gray-500 dark:text-gray-400 ml-1"
+        >vs previous period</span
+      >
+    </div>
+    <div class="tooltip">
+      Average customer satisfaction rating out of 5 stars
+    </div>
+  </div>
+</div>
+
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+  <!-- Revenue Chart -->
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+  >
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Revenue Trend
+      </h2>
+      <div class="flex items-center gap-2">
+        <button
+          (click)="onMetricChange('revenue')"
+          class="px-3 py-1 text-sm rounded-md transition-colors"
+          [ngClass]="{
+            'bg-food-orange text-white': selectedMetric === 'revenue',
+            'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700':
+              selectedMetric !== 'revenue'
+          }"
+          title="Show revenue trend over time"
+        >
+          Revenue
+        </button>
+        <button
+          (click)="onMetricChange('orders')"
+          class="px-3 py-1 text-sm rounded-md transition-colors"
+          [ngClass]="{
+            'bg-food-orange text-white': selectedMetric === 'orders',
+            'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700':
+              selectedMetric !== 'orders'
+          }"
+          title="Show order count trend over time"
+        >
+          Orders
+        </button>
+      </div>
+    </div>
+
+    <!-- SVG Line Chart -->
+    <div class="h-64 relative">
+      <svg class="w-full h-full" viewBox="0 0 400 200">
+        <!-- Grid lines -->
+        <defs>
+          <pattern
+            id="grid"
+            width="40"
+            height="40"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 40 0 L 0 0 0 40"
+              fill="none"
+              stroke="#e5e7eb"
+              stroke-width="1"
+              opacity="0.3"
+            />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- Line path -->
+        <g *ngIf="revenueData.length > 0">
+          <path
+            [attr.d]="generateLinePath()"
+            fill="none"
+            stroke="#ff6b35"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <!-- Data points with tooltips -->
+          <circle
+            *ngFor="let point of revenueData; let i = index; trackBy: trackByFn"
+            [attr.cx]="(i / (revenueData.length - 1)) * 380 + 10"
+            [attr.cy]="getYPosition(point, selectedMetric)"
+            r="4"
+            fill="#ff6b35"
+            class="animate-pulse cursor-pointer hover:opacity-80 transition-all"
+            (mouseenter)="showChartTooltip($event, point, i)"
+            (mouseleave)="hideChartTooltip()"
+          />
+        </g>
+      </svg>
+
+      <!-- Chart labels -->
+      <div
+        class="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-600 dark:text-gray-400 px-2"
+      >
+        <span *ngFor="let point of revenueData.slice(0, 5); trackBy: trackByFn">
+          {{ formatDate(point.date) }}
+        </span>
+      </div>
+
+      <!-- Chart Tooltip -->
+      <div
+        id="chartTooltip"
+        class="absolute bg-gray-900 dark:bg-gray-700 text-white px-3 py-2 rounded-lg text-sm opacity-0 pointer-events-none transition-all duration-200 z-50 whitespace-nowrap shadow-lg"
+        [style.left.px]="tooltipPosition.x"
+        [style.top.px]="tooltipPosition.y"
+      >
+        <div class="font-medium">{{ tooltipContent.date }}</div>
+        <div class="text-food-orange">{{ tooltipContent.value }}</div>
+        <!-- Tooltip arrow -->
+        <div class="absolute top-full left-1/2 transform -translate-x-1/2">
+          <div
+            class="border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hourly Trends -->
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+  >
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+      Hourly Orders
+    </h2>
+    <div class="space-y-3">
+      <div
+        *ngFor="let slot of hourlyData; trackBy: trackByFn"
+        class="flex items-center gap-4 tooltip-container"
+      >
+        <div class="w-12 text-sm text-gray-600 dark:text-gray-400">
+          {{ slot.hour }}
+        </div>
+        <div
+          class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-3 relative overflow-hidden cursor-pointer"
+          [title]="
+            slot.hour +
+            ': ' +
+            slot.orders +
+            ' orders, ' +
+            formatPrice(slot.revenue) +
+            ' revenue'
+          "
+        >
+          <div
+            class="h-full bg-gradient-to-r from-food-orange to-food-orange/80 rounded-full transition-all duration-1000"
+            [style.width.%]="
+              (slot.orders / getMaxValue(hourlyData, 'orders')) * 100
+            "
+          ></div>
+        </div>
+        <div class="w-8 text-sm font-medium text-gray-900 dark:text-white">
+          {{ slot.orders }}
+        </div>
+        <div class="tooltip">
+          {{ slot.hour }}: {{ slot.orders }} orders,
+          {{ formatPrice(slot.revenue) }} revenue
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Performance Metrics & Popular Items -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+  <!-- Performance Metrics -->
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+  >
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+      Performance Metrics
+    </h2>
+    <div class="space-y-4">
+      <div
+        *ngFor="let metric of performanceMetrics; trackBy: trackByFn"
+        class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors tooltip-container"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm"
+            [title]="getMetricTooltip(metric.icon)"
+          >
+            <svg
+              class="w-5 h-5 text-food-orange"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <!-- Different icons based on metric.icon -->
+              <path
+                *ngIf="metric.icon === 'clock'"
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"
+              />
+              <path
+                *ngIf="metric.icon === 'check'"
+                d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+              />
+              <path
+                *ngIf="metric.icon === 'star'"
+                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              />
+              <path
+                *ngIf="metric.icon === 'refresh'"
+                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+              />
+            </svg>
+          </div>
+          <div>
+            <p class="font-medium text-gray-900 dark:text-white">
+              {{ metric.metric }}
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ metric.value }}{{ metric.unit }}
+            </p>
+          </div>
+        </div>
+        <div class="text-right">
+          <span
+            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+            [ngClass]="{
+              'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400':
+                metric.changeDirection === 'up',
+              'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400':
+                metric.changeDirection === 'down',
+              'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300':
+                metric.changeDirection === 'neutral'
+            }"
+            [title]="metric.change + '% change from previous period'"
+          >
+            <svg
+              *ngIf="metric.changeDirection === 'up'"
+              class="w-3 h-3 mr-1"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <svg
+              *ngIf="metric.changeDirection === 'down'"
+              class="w-3 h-3 mr-1"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {{ metric.change >= 0 ? "+" : "" }}{{ metric.change }}%
+          </span>
+        </div>
+        <div class="tooltip">{{ getMetricDescription(metric) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Items -->
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+  >
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+      Popular Items
+    </h2>
+    <div class="space-y-4">
+      <div
+        *ngFor="let item of popularItems; let i = index; trackBy: trackByFn"
+        class="flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg p-2 transition-colors tooltip-container"
+      >
+        <div
+          class="w-8 text-center text-sm font-medium text-gray-500 dark:text-gray-400"
+        >
+          {{ i + 1 }}
+        </div>
+        <img
+          [src]="item.image"
+          [alt]="item.name"
+          class="w-12 h-12 object-cover rounded-lg"
+          [title]="item.name + ' - ' + item.category"
+          (error)="
+            $any($event.target).src =
+              'https://images.unsplash.com/photo-1546548970-71785318a17b?w=400'
+          "
+        />
+        <div class="flex-1">
+          <h3 class="font-medium text-gray-900 dark:text-white">
+            {{ item.name }}
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            {{ item.ordersCount }} orders • {{ formatPrice(item.revenue) }}
+          </p>
+        </div>
+        <div class="w-16">
+          <div
+            class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden"
+            [title]="item.percentage + '% of total orders'"
+          >
+            <div
+              class="h-full bg-food-orange rounded-full transition-all duration-1000"
+              [style.width.%]="item.percentage"
+            ></div>
+          </div>
+          <div
+            class="text-xs text-gray-600 dark:text-gray-400 mt-1 text-center"
+          >
+            {{ item.percentage }}%
+          </div>
+        </div>
+        <div class="tooltip">
+          {{ item.name }} ({{ item.category }}): {{ item.ordersCount }} orders,
+          {{ formatPrice(item.revenue) }} revenue
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Insights & Order Status -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+  <!-- Customer Insights -->
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+  >
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+      Customer Insights
+    </h2>
+    <div class="space-y-6">
+      <!-- Customer Distribution -->
+      <div>
+        <h3 class="font-medium text-gray-900 dark:text-white mb-4">
+          Customer Distribution
+        </h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between tooltip-container">
+            <span class="text-sm text-gray-600 dark:text-gray-400"
+              >New Customers</span
+            >
+            <div class="flex items-center gap-2">
+              <div
+                class="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden cursor-pointer"
+                [title]="
+                  customerInsights.newCustomers +
+                  ' new customers (' +
+                  (
+                    (customerInsights.newCustomers /
+                      customerInsights.totalCustomers) *
+                    100
+                  ).toFixed(1) +
+                  '%)'
+                "
+              >
+                <div
+                  class="h-full bg-blue-500 rounded-full transition-all duration-1000"
+                  [style.width.%]="
+                    (customerInsights.newCustomers /
+                      customerInsights.totalCustomers) *
+                    100
+                  "
+                ></div>
+              </div>
+              <span
+                class="text-sm font-medium text-gray-900 dark:text-white w-8"
+                >{{ customerInsights.newCustomers }}</span
+              >
+            </div>
+            <div class="tooltip">
+              {{ customerInsights.newCustomers }} first-time customers
+            </div>
+          </div>
+          <div class="flex items-center justify-between tooltip-container">
+            <span class="text-sm text-gray-600 dark:text-gray-400"
+              >Returning</span
+            >
+            <div class="flex items-center gap-2">
+              <div
+                class="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden cursor-pointer"
+                [title]="
+                  customerInsights.returningCustomers +
+                  ' returning customers (' +
+                  (
+                    (customerInsights.returningCustomers /
+                      customerInsights.totalCustomers) *
+                    100
+                  ).toFixed(1) +
+                  '%)'
+                "
+              >
+                <div
+                  class="h-full bg-green-500 rounded-full transition-all duration-1000"
+                  [style.width.%]="
+                    (customerInsights.returningCustomers /
+                      customerInsights.totalCustomers) *
+                    100
+                  "
+                ></div>
+              </div>
+              <span
+                class="text-sm font-medium text-gray-900 dark:text-white w-8"
+                >{{ customerInsights.returningCustomers }}</span
+              >
+            </div>
+            <div class="tooltip">
+              {{ customerInsights.returningCustomers }} customers who have
+              ordered before
+            </div>
+          </div>
+          <div class="flex items-center justify-between tooltip-container">
+            <span class="text-sm text-gray-600 dark:text-gray-400">VIP</span>
+            <div class="flex items-center gap-2">
+              <div
+                class="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden cursor-pointer"
+                [title]="
+                  customerInsights.vipCustomers +
+                  ' VIP customers (' +
+                  (
+                    (customerInsights.vipCustomers /
+                      customerInsights.totalCustomers) *
+                    100
+                  ).toFixed(1) +
+                  '%)'
+                "
+              >
+                <div
+                  class="h-full bg-yellow-500 rounded-full transition-all duration-1000"
+                  [style.width.%]="
+                    (customerInsights.vipCustomers /
+                      customerInsights.totalCustomers) *
+                    100
+                  "
+                ></div>
+              </div>
+              <span
+                class="text-sm font-medium text-gray-900 dark:text-white w-8"
+                >{{ customerInsights.vipCustomers }}</span
+              >
+            </div>
+            <div class="tooltip">
+              {{ customerInsights.vipCustomers }} high-value loyal customers
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Stats -->
+      <div class="grid grid-cols-2 gap-4">
+        <div
+          class="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg tooltip-container"
+        >
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ formatPrice(customerInsights.averageOrderValue) }}
+          </div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">
+            Avg Order Value
+          </div>
+          <div class="tooltip">
+            Average amount each customer spends per order
+          </div>
+        </div>
+        <div
+          class="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg tooltip-container"
+        >
+          <div class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ customerInsights.customerRetentionRate }}%
+          </div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">
+            Retention Rate
+          </div>
+          <div class="tooltip">
+            Percentage of customers who return to order again
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Status & Category Performance -->
+  <div class="space-y-6">
+    <!-- Order Status Distribution -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+        Order Status Distribution
+      </h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div
+          class="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg tooltip-container cursor-pointer"
+          title="Successfully completed and delivered orders"
+        >
+          <div class="text-2xl font-bold text-green-600">
+            {{ orderStatusData.delivered }}%
+          </div>
+          <div class="text-sm text-green-700 dark:text-green-400">
+            Delivered
+          </div>
+          <div class="tooltip">
+            {{ orderStatusData.delivered }}% of orders successfully delivered
+          </div>
+        </div>
+        <div
+          class="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg tooltip-container cursor-pointer"
+          title="Orders currently being prepared"
+        >
+          <div class="text-2xl font-bold text-yellow-600">
+            {{ orderStatusData.preparing }}%
+          </div>
+          <div class="text-sm text-yellow-700 dark:text-yellow-400">
+            Preparing
+          </div>
+          <div class="tooltip">
+            {{ orderStatusData.preparing }}% of orders currently in preparation
+          </div>
+        </div>
+        <div
+          class="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg tooltip-container cursor-pointer"
+          title="Orders waiting to be processed"
+        >
+          <div class="text-2xl font-bold text-blue-600">
+            {{ orderStatusData.pending }}%
+          </div>
+          <div class="text-sm text-blue-700 dark:text-blue-400">Pending</div>
+          <div class="tooltip">
+            {{ orderStatusData.pending }}% of orders awaiting processing
+          </div>
+        </div>
+        <div
+          class="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg tooltip-container cursor-pointer"
+          title="Cancelled or failed orders"
+        >
+          <div class="text-2xl font-bold text-red-600">
+            {{ orderStatusData.cancelled }}%
+          </div>
+          <div class="text-sm text-red-700 dark:text-red-400">Cancelled</div>
+          <div class="tooltip">
+            {{ orderStatusData.cancelled }}% of orders were cancelled
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Performance -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+        Category Performance
+      </h2>
+      <div class="space-y-3">
+        <div
+          *ngFor="let category of categoryData; trackBy: trackByFn"
+          class="flex items-center justify-between tooltip-container"
+        >
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm font-medium text-gray-900 dark:text-white">{{
+                category.name
+              }}</span>
+              <span class="text-sm text-gray-600 dark:text-gray-400"
+                >{{ category.percentage }}%</span
+              >
+            </div>
+            <div
+              class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden cursor-pointer"
+              [title]="
+                category.name +
+                ': ' +
+                formatPrice(category.revenue) +
+                ' revenue, ' +
+                category.orders +
+                ' orders'
+              "
+            >
+              <div
+                class="h-full bg-food-orange rounded-full transition-all duration-1000"
+                [style.width.%]="category.percentage"
+              ></div>
+            </div>
+            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              {{ formatPrice(category.revenue) }} • {{ category.orders }} orders
+            </div>
+          </div>
+          <div class="tooltip">
+            {{ category.name }}: {{ formatPrice(category.revenue) }} revenue
+            from {{ category.orders }} orders ({{ category.percentage }}% of
+            total)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,942 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Header -->
+  <div class="bg-white dark:bg-gray-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-6">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            Customer Management
+          </h1>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Manage your customers, orders, and relationships
+          </p>
+        </div>
+        <div class="flex space-x-4">
+          <button
+            (click)="currentView = 'list'"
+            [class]="
+              currentView === 'list'
+                ? 'bg-orange-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
+            class="px-4 py-2 rounded-lg font-medium transition-colors"
+          >
+            Customer List
+          </button>
+          <button
+            (click)="currentView = 'analytics'"
+            [class]="
+              currentView === 'analytics'
+                ? 'bg-orange-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
+            class="px-4 py-2 rounded-lg font-medium transition-colors"
+          >
+            Analytics
+          </button>
+          <button
+            (click)="openFeedbackModal()"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          >
+            View Feedback
+          </button>
+          <button
+            (click)="openAddCustomerModal()"
+            class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          >
+            Add Customer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="flex items-center justify-center h-8 w-8 rounded-md bg-blue-500 text-white"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt
+                class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate"
+              >
+                Total Customers
+              </dt>
+              <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                {{ customerStats.total }}
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="flex items-center justify-center h-8 w-8 rounded-md bg-green-500 text-white"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt
+                class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate"
+              >
+                Active Customers
+              </dt>
+              <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                {{ customerStats.active }}
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="flex items-center justify-center h-8 w-8 rounded-md bg-purple-500 text-white"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt
+                class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate"
+              >
+                Total Revenue
+              </dt>
+              <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                {{ formatCurrency(customerStats.totalRevenue) }}
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="flex items-center justify-center h-8 w-8 rounded-md bg-orange-500 text-white"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt
+                class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate"
+              >
+                Avg Order Value
+              </dt>
+              <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                {{ formatCurrency(customerStats.avgOrderValue) }}
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div
+              class="flex items-center justify-center h-8 w-8 rounded-md bg-red-500 text-white"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt
+                class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate"
+              >
+                Pending Feedback
+              </dt>
+              <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                {{ customerStats.pendingFeedback }}
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer List View -->
+    <div
+      *ngIf="currentView === 'list'"
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm"
+    >
+      <!-- Filters and Search -->
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex items-center space-x-2">
+              <label
+                class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Status:</label
+              >
+              <select
+                [(ngModel)]="statusFilter"
+                class="rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-sm"
+              >
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="blocked">Blocked</option>
+              </select>
+            </div>
+            <div class="flex items-center space-x-2">
+              <label
+                class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Sort by:</label
+              >
+              <select
+                [(ngModel)]="sortBy"
+                class="rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-sm"
+              >
+                <option value="totalSpent">Total Spent</option>
+                <option value="totalOrders">Total Orders</option>
+                <option value="loyaltyPoints">Loyalty Points</option>
+                <option value="joinDate">Join Date</option>
+              </select>
+              <button
+                (click)="sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'"
+                class="p-1 rounded text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <svg
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    *ngIf="sortOrder === 'desc'"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 13l3 3 7-7"
+                  />
+                  <path
+                    *ngIf="sortOrder === 'asc'"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 11l-3-3-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <svg
+              class="h-5 w-5 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <input
+              [(ngModel)]="searchTerm"
+              type="text"
+              placeholder="Search customers..."
+              class="rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm w-64"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-900">
+            <tr>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              >
+                Customer
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              >
+                Contact
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              >
+                Loyalty
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              >
+                Orders
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              >
+                Total Spent
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+          >
+            <tr
+              *ngFor="let customer of filteredCustomers"
+              class="hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img
+                      class="h-10 w-10 rounded-full object-cover"
+                      [src]="customer.avatar"
+                      [alt]="customer.name"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <div
+                      class="text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      {{ customer.name }}
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                      {{ customer.city }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 dark:text-white">
+                  {{ customer.email }}
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ customer.phone }}
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  [class]="getStatusColor(customer.status)"
+                  class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                >
+                  {{ customer.status | titlecase }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <span
+                    [class]="getCustomerTier(customer.loyaltyPoints).color"
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full text-white mr-2"
+                  >
+                    {{ getCustomerTier(customer.loyaltyPoints).name }}
+                  </span>
+                  <span class="text-sm text-gray-500 dark:text-gray-400"
+                    >{{ customer.loyaltyPoints }} pts</span
+                  >
+                </div>
+              </td>
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
+              >
+                {{ customer.totalOrders }}
+              </td>
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
+              >
+                {{ formatCurrency(customer.totalSpent) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div class="flex items-center space-x-2">
+                  <button
+                    (click)="openOrderHistory(customer)"
+                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                    title="View Orders"
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="openEditCustomerModal(customer)"
+                    class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                    title="Edit Customer"
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="toggleCustomerStatus(customer)"
+                    [class]="
+                      customer.status === 'active'
+                        ? 'text-yellow-600 hover:text-yellow-900'
+                        : 'text-green-600 hover:text-green-900'
+                    "
+                    [title]="
+                      customer.status === 'active'
+                        ? 'Deactivate Customer'
+                        : 'Activate Customer'
+                    "
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        *ngIf="customer.status === 'active'"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L5.636 5.636"
+                      />
+                      <path
+                        *ngIf="customer.status !== 'active'"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="deleteCustomer(customer.id)"
+                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                    title="Delete Customer"
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Analytics View -->
+    <div *ngIf="currentView === 'analytics'" class="space-y-6">
+      <!-- Top Customers -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            Top Customers by Revenue
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div
+              *ngFor="let customer of topCustomers; let i = index"
+              class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg"
+            >
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0">
+                  <span
+                    class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-orange-500 text-white text-sm font-medium"
+                  >
+                    {{ i + 1 }}
+                  </span>
+                </div>
+                <img
+                  class="h-10 w-10 rounded-full object-cover"
+                  [src]="customer.avatar"
+                  [alt]="customer.name"
+                />
+                <div>
+                  <div
+                    class="text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    {{ customer.name }}
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ customer.email }}
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{ formatCurrency(customer.totalSpent) }}
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ customer.totalOrders }} orders
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loyalty Program Overview -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            Loyalty Program Distribution
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div *ngFor="let tier of loyaltyTiers" class="text-center">
+              <div
+                [class]="tier.color"
+                class="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center"
+              >
+                <span class="text-white font-bold">{{
+                  tier.name.charAt(0)
+                }}</span>
+              </div>
+              <h4 class="text-sm font-medium text-gray-900 dark:text-white">
+                {{ tier.name }}
+              </h4>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                {{ tier.minPoints }}+ points
+              </p>
+              <p class="text-lg font-bold text-gray-900 dark:text-white mt-2">
+                {{ getCustomersInTier(tier.id) }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Modal -->
+<div
+  *ngIf="showCustomerModal"
+  class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+>
+  <div
+    class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800"
+  >
+    <div class="mt-3">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white text-center">
+        {{ selectedCustomer ? "Edit Customer" : "Add New Customer" }}
+      </h3>
+      <form class="mt-4 space-y-4">
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Name</label
+          >
+          <input
+            [(ngModel)]="formName"
+            name="name"
+            type="text"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+            required
+          />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Email</label
+          >
+          <input
+            [(ngModel)]="formEmail"
+            name="email"
+            type="email"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+            required
+          />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Phone</label
+          >
+          <input
+            [(ngModel)]="formPhone"
+            name="phone"
+            type="tel"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+          />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Address</label
+          >
+          <input
+            [(ngModel)]="formAddress"
+            name="address"
+            type="text"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+          />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >City</label
+          >
+          <input
+            [(ngModel)]="formCity"
+            name="city"
+            type="text"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+          />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Status</label
+          >
+          <select
+            [(ngModel)]="formStatus"
+            name="status"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+          >
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="blocked">Blocked</option>
+          </select>
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Notes</label
+          >
+          <textarea
+            [(ngModel)]="formNotes"
+            name="notes"
+            rows="3"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+          ></textarea>
+        </div>
+      </form>
+      <div class="items-center px-4 py-3">
+        <div class="flex justify-end space-x-2">
+          <button
+            (click)="closeModals()"
+            class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            Cancel
+          </button>
+          <button
+            (click)="saveCustomer()"
+            class="px-4 py-2 bg-orange-500 text-white text-base font-medium rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+          >
+            {{ selectedCustomer ? "Update" : "Add" }} Customer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order History Modal -->
+<div
+  *ngIf="showOrderHistoryModal && selectedCustomer"
+  class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+>
+  <div
+    class="relative top-10 mx-auto p-5 border w-4/5 max-w-4xl shadow-lg rounded-md bg-white dark:bg-gray-800"
+  >
+    <div class="mt-3">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white text-center">
+        Order History - {{ selectedCustomer.name }}
+      </h3>
+      <div class="mt-4 max-h-96 overflow-y-auto">
+        <div
+          *ngFor="let order of getCustomerOrders(selectedCustomer.id)"
+          class="mb-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+        >
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white">
+                {{ order.orderNumber }}
+              </h4>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ formatDate(order.date) }}
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-lg font-bold text-gray-900 dark:text-white">
+                {{ formatCurrency(order.total) }}
+              </p>
+              <span
+                [class]="getStatusColor(order.status)"
+                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+              >
+                {{ order.status | titlecase }}
+              </span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div
+              *ngFor="let item of order.items"
+              class="flex justify-between text-sm"
+            >
+              <span class="text-gray-700 dark:text-gray-300"
+                >{{ item.quantity }}x {{ item.name }}</span
+              >
+              <span class="text-gray-900 dark:text-white">{{
+                formatCurrency(item.total)
+              }}</span>
+            </div>
+          </div>
+          <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              <strong>Delivery:</strong> {{ order.deliveryAddress }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              <strong>Payment:</strong> {{ order.paymentMethod }}
+            </p>
+          </div>
+        </div>
+        <div
+          *ngIf="getCustomerOrders(selectedCustomer.id).length === 0"
+          class="text-center py-8"
+        >
+          <p class="text-gray-500 dark:text-gray-400">
+            No orders found for this customer
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end mt-4">
+        <button
+          (click)="closeModals()"
+          class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback Modal -->
+<div
+  *ngIf="showFeedbackModal"
+  class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+>
+  <div
+    class="relative top-10 mx-auto p-5 border w-4/5 max-w-4xl shadow-lg rounded-md bg-white dark:bg-gray-800"
+  >
+    <div class="mt-3">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white text-center">
+        Customer Feedback
+      </h3>
+      <div class="mt-4 max-h-96 overflow-y-auto">
+        <div
+          *ngFor="let fb of feedback"
+          class="mb-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+        >
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white">
+                {{ findCustomerById(fb.customerId)?.name }}
+              </h4>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ getStarRating(fb.rating) }} - {{ formatDate(fb.date) }}
+              </p>
+            </div>
+            <button
+              *ngIf="!fb.responded"
+              (click)="openResponseModal(fb)"
+              class="px-3 py-1 bg-orange-500 text-white text-sm rounded-md hover:bg-orange-600"
+            >
+              Respond
+            </button>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 mb-2">{{ fb.comment }}</p>
+          <div
+            *ngIf="fb.responded && fb.response"
+            class="mt-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md"
+          >
+            <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">
+              Your Response:
+            </p>
+            <p class="text-gray-700 dark:text-gray-300">{{ fb.response }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end mt-4">
+        <button
+          (click)="closeModals()"
+          class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Response Modal -->
+<div
+  *ngIf="showResponseModal && selectedFeedback"
+  class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+>
+  <div
+    class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800"
+  >
+    <div class="mt-3">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white text-center">
+        Respond to Feedback
+      </h3>
+      <div class="mt-4">
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+          <strong>Customer:</strong>
+          {{ findCustomerById(selectedFeedback.customerId)?.name }}
+        </p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+          <strong>Rating:</strong> {{ getStarRating(selectedFeedback.rating) }}
+        </p>
+        <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+          <strong>Comment:</strong> {{ selectedFeedback.comment }}
+        </p>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Your Response</label
+          >
+          <textarea
+            [(ngModel)]="feedbackResponse"
+            rows="4"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500"
+            placeholder="Write your response to the customer..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-2 mt-4">
+        <button
+          (click)="closeModals()"
+          class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="submitFeedbackResponse()"
+          class="px-4 py-2 bg-orange-500 text-white text-base font-medium rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+        >
+          Send Response
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

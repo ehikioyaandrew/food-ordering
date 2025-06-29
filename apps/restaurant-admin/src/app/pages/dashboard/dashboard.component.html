@@ -98,161 +98,310 @@
 
 <!-- Navigation Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <!-- Menu Management -->
   <div
-    class="card p-6 hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-shadow cursor-pointer"
+    class="card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 group"
     (click)="navigateToMenuManagement()"
   >
-    <div class="flex items-center gap-4">
-      <div class="p-4 bg-food-orange/10 rounded-xl">
+    <div class="flex items-center justify-between mb-4">
+      <div
+        class="p-3 bg-food-orange/10 rounded-lg group-hover:bg-food-orange/20 transition-colors"
+      >
         <svg
-          class="w-8 h-8 text-food-orange"
-          fill="currentColor"
+          class="w-6 h-6 text-food-orange"
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path
-            d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1.87C18 .84 17.16 0 16.13 0h-1.25c-1.03 0-1.87.84-1.87 1.87v3.18h-2.23c-.68 0-1.24.56-1.24 1.24s.56 1.24 1.24 1.24H18l-1.67 14.77c-.1.82.53 1.64 1.41 1.64z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
           />
         </svg>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Menu Management
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-          Add, edit, and organize your menu items
-        </p>
-      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
     </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Menu Management
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Add, edit, and organize your menu items
+    </p>
   </div>
 
+  <!-- Orders Management -->
   <div
-    class="card p-6 hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-shadow cursor-pointer"
+    class="card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 group"
     (click)="navigateToOrders()"
   >
-    <div class="flex items-center gap-4">
-      <div class="p-4 bg-blue-500/10 rounded-xl">
+    <div class="flex items-center justify-between mb-4">
+      <div
+        class="p-3 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors"
+      >
         <svg
-          class="w-8 h-8 text-blue-600"
-          fill="currentColor"
+          class="w-6 h-6 text-blue-600"
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path
-            d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 11V7a4 4 0 00-8 0v4M8 11v6h8v-6M8 11H6a2 2 0 00-2 2v4a2 2 0 002 2h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2"
           />
         </svg>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Orders
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-          View and manage incoming orders
-        </p>
-      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
     </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Orders Management
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      View and manage incoming orders
+    </p>
   </div>
 
+  <!-- Analytics -->
   <div
-    class="card p-6 hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-shadow cursor-pointer"
+    class="card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+    (click)="navigateToAnalytics()"
   >
-    <div class="flex items-center gap-4">
-      <div class="p-4 bg-green-500/10 rounded-xl">
+    <div class="flex items-center justify-between mb-4">
+      <div
+        class="p-3 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors"
+      >
         <svg
-          class="w-8 h-8 text-green-600"
-          fill="currentColor"
+          class="w-6 h-6 text-purple-600"
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path
-            d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
           />
         </svg>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Analytics
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-          Track sales and performance metrics
-        </p>
-      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
     </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Analytics
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      View performance metrics and insights
+    </p>
   </div>
 
+  <!-- Customer Management -->
   <div
-    class="card p-6 hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-shadow cursor-pointer"
+    class="card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+    (click)="navigateToCustomers()"
   >
-    <div class="flex items-center gap-4">
-      <div class="p-4 bg-purple-500/10 rounded-xl">
+    <div class="flex items-center justify-between mb-4">
+      <div
+        class="p-3 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors"
+      >
         <svg
-          class="w-8 h-8 text-purple-600"
-          fill="currentColor"
+          class="w-6 h-6 text-green-600"
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path
-            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
           />
         </svg>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Staff Management
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-          Manage restaurant staff and roles
-        </p>
-      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
     </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Customer Management
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Manage customer relationships and feedback
+    </p>
   </div>
 
+  <!-- Promotions -->
   <div
-    class="card p-6 hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-shadow cursor-pointer"
+    class="card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+    (click)="navigateToPromotions()"
   >
-    <div class="flex items-center gap-4">
-      <div class="p-4 bg-yellow-500/10 rounded-xl">
+    <div class="flex items-center justify-between mb-4">
+      <div
+        class="p-3 bg-yellow-500/10 rounded-lg group-hover:bg-yellow-500/20 transition-colors"
+      >
         <svg
-          class="w-8 h-8 text-yellow-600"
-          fill="currentColor"
+          class="w-6 h-6 text-yellow-600"
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path
-            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
           />
         </svg>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Restaurant Settings
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-          Update restaurant info and preferences
-        </p>
-      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
     </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Promotions
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Create and manage promotional campaigns
+    </p>
   </div>
 
+  <!-- Settings -->
   <div
-    class="card p-6 hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-shadow cursor-pointer"
+    class="card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+    (click)="navigateToSettings()"
   >
-    <div class="flex items-center gap-4">
-      <div class="p-4 bg-red-500/10 rounded-xl">
+    <div class="flex items-center justify-between mb-4">
+      <div
+        class="p-3 bg-gray-500/10 rounded-lg group-hover:bg-gray-500/20 transition-colors"
+      >
         <svg
-          class="w-8 h-8 text-red-600"
-          fill="currentColor"
+          class="w-6 h-6 text-gray-600"
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path
-            d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Reports
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-          Generate detailed sales reports
-        </p>
-      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
     </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Settings
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Configure restaurant settings and preferences
+    </p>
+  </div>
+
+  <!-- Staff Management -->
+  <div
+    class="card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+    (click)="navigateToStaffManagement()"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <div
+        class="p-3 bg-indigo-500/10 rounded-lg group-hover:bg-indigo-500/20 transition-colors"
+      >
+        <svg
+          class="w-6 h-6 text-indigo-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        </svg>
+      </div>
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Staff Management
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Manage staff members, roles, and permissions
+    </p>
   </div>
 </div>
