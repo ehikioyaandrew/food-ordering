@@ -1,0 +1,289 @@
+<p>order-tracking works!</p>
+
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        (click)="goBack()"
+        text=""
+        icon="arrow-back"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <div class="flex items-center gap-2">
+        <ion-icon name="receipt" class="text-lg"></ion-icon>
+        <span class="font-semibold">Order Tracking</span>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-gray-50 dark:bg-dark-bg">
+  <ion-header collapse="condense" class="dark:bg-dark-bg">
+    <ion-toolbar class="dark:bg-dark-bg">
+      <ion-title size="large" class="text-gray-900 dark:text-white">
+        Order Tracking
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="px-4 pb-4">
+    <!-- Order Header -->
+    <div class="mb-6 pt-4">
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <div class="text-center">
+            <div class="mb-3">
+              <ion-chip
+                class="bg-food-orange/10 dark:bg-food-orange-dark/10 text-food-orange dark:text-food-orange-dark font-semibold"
+              >
+                {{ currentStatus }}
+              </ion-chip>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Order #{{ orderId }}
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-3">
+              {{ restaurantName }} • ${{ orderTotal.toFixed(2) }}
+            </p>
+            <div
+              class="flex items-center justify-center gap-2 text-green-600 dark:text-green-400"
+            >
+              <ion-icon name="time" class="text-sm"></ion-icon>
+              <span class="font-medium"
+                >Estimated delivery: {{ estimatedDeliveryTime }}</span
+              >
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >Order Progress</span
+        >
+        <span
+          class="text-sm font-medium text-food-orange dark:text-food-orange-dark"
+          >{{ progressPercentage }}%</span
+        >
+      </div>
+      <ion-progress-bar
+        [value]="progressPercentage / 100"
+        class="h-2 rounded-full"
+        style="--progress-background: #ff6b35"
+      ></ion-progress-bar>
+    </div>
+
+    <!-- Order Status Timeline -->
+    <div class="mb-6">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Order Status
+      </h3>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <div class="space-y-4">
+            <div
+              *ngFor="let status of orderStatuses; let last = last"
+              class="relative"
+            >
+              <!-- Timeline line -->
+              <div
+                *ngIf="!last"
+                class="absolute left-4 top-8 w-0.5 h-8 bg-gray-200 dark:bg-gray-700"
+                [class.bg-food-orange]="status.completed"
+                [class.dark:bg-food-orange-dark]="status.completed"
+              ></div>
+
+              <!-- Status item -->
+              <div class="flex items-start gap-3">
+                <div
+                  class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                  [class.bg-food-orange]="status.completed"
+                  [class.dark:bg-food-orange-dark]="status.completed"
+                  [class.bg-gray-200]="!status.completed"
+                  [class.dark:bg-gray-700]="!status.completed"
+                >
+                  <ion-icon
+                    name="checkmark-circle"
+                    class="text-sm"
+                    [class.text-white]="status.completed"
+                    [class.text-gray-400]="!status.completed"
+                    [class.dark:text-gray-500]="!status.completed"
+                  >
+                  </ion-icon>
+                </div>
+
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <h4
+                      class="font-semibold text-gray-900 dark:text-white"
+                      [class.text-food-orange]="
+                        status.completed && status.id === 2
+                      "
+                      [class.dark:text-food-orange-dark]="
+                        status.completed && status.id === 2
+                      "
+                    >
+                      {{ status.title }}
+                    </h4>
+                    <span
+                      *ngIf="status.timestamp"
+                      class="text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      {{ status.timestamp }}
+                    </span>
+                  </div>
+                  <p class="text-sm text-gray-600 dark:text-gray-300">
+                    {{ status.description }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Delivery Person Info -->
+    <div
+      class="mb-6"
+      *ngIf="
+        currentStatus === 'Out for Delivery' || currentStatus === 'Delivered'
+      "
+    >
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Your Delivery Person
+      </h3>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <div class="flex items-center gap-4 mb-4">
+            <ion-avatar class="w-16 h-16">
+              <ion-img
+                [src]="deliveryPerson.photo"
+                [alt]="deliveryPerson.name"
+              ></ion-img>
+            </ion-avatar>
+
+            <div class="flex-1">
+              <h4 class="font-bold text-gray-900 dark:text-white">
+                {{ deliveryPerson.name }}
+              </h4>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="flex items-center">
+                  <span class="text-yellow-500">★</span>
+                  <span
+                    class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1"
+                  >
+                    {{ deliveryPerson.rating }}
+                  </span>
+                </div>
+                <span class="text-gray-400">•</span>
+                <span
+                  class="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-1"
+                >
+                  <ion-icon name="bicycle" class="text-sm"></ion-icon>
+                  {{ deliveryPerson.vehicleType }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <ion-button
+              fill="outline"
+              size="default"
+              (click)="callDeliveryPerson()"
+              class="flex-1"
+              style="--border-color: #ff6b35; --color: #ff6b35"
+            >
+              <ion-icon name="call" slot="start"></ion-icon>
+              Call
+            </ion-button>
+
+            <ion-button
+              fill="solid"
+              size="default"
+              (click)="chatWithDeliveryPerson()"
+              class="flex-1"
+              style="
+                --background: #ff6b35;
+                --background-activated: #ff5722;
+                --color: white;
+              "
+            >
+              <ion-icon name="chatbubble" slot="start"></ion-icon>
+              Chat
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Delivery Address -->
+    <div class="mb-6">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Delivery Address
+      </h3>
+
+      <ion-card class="m-0 rounded-2xl shadow-card dark:shadow-card-dark">
+        <ion-card-content class="p-4">
+          <div class="flex items-start gap-3">
+            <div
+              class="w-10 h-10 bg-food-orange/10 dark:bg-food-orange-dark/10 rounded-full flex items-center justify-center flex-shrink-0"
+            >
+              <ion-icon
+                name="location"
+                class="text-lg text-food-orange dark:text-food-orange-dark"
+              ></ion-icon>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900 dark:text-white mb-1">
+                Home
+              </h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">
+                123 Main Street, Apt 4B<br />
+                New York, NY 10001
+              </p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="space-y-3 pb-4">
+      <ion-button
+        expand="block"
+        fill="outline"
+        size="large"
+        (click)="goToOrderDetails()"
+        class="rounded-2xl h-12"
+        style="--border-color: #ff6b35; --color: #ff6b35"
+      >
+        <ion-icon name="receipt" slot="start"></ion-icon>
+        View Order Details
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="solid"
+        size="large"
+        (click)="goBack()"
+        class="rounded-2xl h-12"
+        style="
+          --background: #ff6b35;
+          --background-activated: #ff5722;
+          --color: white;
+        "
+      >
+        <ion-icon name="home" slot="start"></ion-icon>
+        Back to Home
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

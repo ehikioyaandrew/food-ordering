@@ -19,7 +19,6 @@ import {
   IonChip,
   IonIcon,
   IonButton,
-  IonButtons,
   IonImg,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -75,7 +74,6 @@ interface Restaurant {
     IonChip,
     IonIcon,
     IonButton,
-    IonButtons,
     IonImg,
   ],
 })

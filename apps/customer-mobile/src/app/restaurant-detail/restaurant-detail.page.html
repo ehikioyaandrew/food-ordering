@@ -67,7 +67,7 @@
           <div class="flex flex-wrap gap-2 mb-4">
             <ion-chip
               *ngFor="let cuisine of restaurant.cuisine"
-              class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-sm"
+              class="bg-food-orange/10 dark:bg-food-orange-dark/10 text-food-orange dark:text-food-orange-dark text-sm"
             >
               {{cuisine}}
             </ion-chip>
@@ -147,9 +147,9 @@
                       <!-- Item Badges -->
                       <ion-chip
                         *ngIf="item.isPopular"
-                        class="bg-food-orange dark:bg-food-orange-dark text-white text-xs px-2 py-1"
+                        class="bg-food-orange/10 dark:bg-food-orange-dark/10 text-food-orange dark:text-food-orange-dark text-sm"
                       >
-                        Popular
+                        🔥 Popular
                       </ion-chip>
                       <ion-chip
                         *ngIf="item.isVegetarian"

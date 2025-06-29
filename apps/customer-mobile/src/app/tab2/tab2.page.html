@@ -198,10 +198,10 @@
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <h4 class="font-bold text-gray-900 dark:text-white text-base">
-                    {{selectedAddress?.title}}
+                    {{selectedAddress.title}}
                   </h4>
                   <ion-chip
-                    *ngIf="selectedAddress?.isDefault"
+                    *ngIf="selectedAddress.isDefault"
                     class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs h-6"
                   >
                     Default
@@ -210,7 +210,7 @@
                 <p
                   class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed"
                 >
-                  {{selectedAddress?.address}}
+                  {{selectedAddress.address}}
                 </p>
                 <div class="flex items-center gap-1 mt-2">
                   <ion-icon
@@ -234,12 +234,14 @@
               expand="block"
               size="default"
               (click)="addressSelect.open()"
-              class="rounded-xl h-12 border-2"
+              class="rounded-xl h-12"
               style="
                 --border-color: #ff6b35;
                 --color: #ff6b35;
                 --color-hover: white;
                 --background-hover: #ff6b35;
+                --background: transparent;
+                --border-width: 2px;
               "
             >
               <ion-icon
@@ -258,7 +260,7 @@
             <!-- Hidden select for functionality -->
             <ion-select
               #addressSelect
-              [value]="selectedAddress?.id"
+              [value]="selectedAddress.id"
               (ionChange)="onAddressChange($event)"
               interface="action-sheet"
               placeholder=""
@@ -266,7 +268,7 @@
               aria-label="Change delivery address"
             >
               <ion-select-option
-                *ngFor="let address of deliveryAddresses"
+                *ngFor="let address of addresses"
                 [value]="address.id"
               >
                 {{address.title}} - {{address.address}}
@@ -439,11 +441,11 @@
           --color: white;
         "
       >
-        <ion-icon name="card" slot="start"></ion-icon>
-        <span class="font-semibold"
+        <ion-icon name="card" slot="start" class="text-lg"></ion-icon>
+        <span class="font-medium text-base"
           >Proceed to Checkout • ${{total.toFixed(2)}}</span
         >
-        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+        <ion-icon name="arrow-forward" slot="end" class="text-lg"></ion-icon>
       </ion-button>
     </div>
   </div>
@@ -469,7 +471,7 @@
 
       <ion-button
         size="large"
-        (click)="continueShopping()"
+        (click)="goToRestaurants()"
         class="rounded-2xl"
         style="
           --background: #ff6b35;

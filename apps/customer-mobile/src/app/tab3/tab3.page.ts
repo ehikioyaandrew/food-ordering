@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -52,6 +52,7 @@ import {
   sunnyOutline,
 } from 'ionicons/icons';
 import { ThemeService } from '../services/theme.service';
+import { CartService, Order } from '../services/cart.service';
 
 interface UserProfile {
   id: number;
@@ -99,7 +100,7 @@ interface OrderHistory {
     IonRippleEffect,
   ],
 })
-export class Tab3Page {
+export class Tab3Page implements OnInit {
   // Mock user data - in a real app, this would come from authentication service
   user: UserProfile = {
     id: 1,
@@ -109,45 +110,24 @@ export class Tab3Page {
     avatar:
       'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
     joinDate: 'January 2023',
-    totalOrders: 24,
+    totalOrders: 0, // Will be updated from CartService
     favoriteRestaurants: 8,
     membershipLevel: 'Gold',
   };
 
-  // Mock order history
-  recentOrders: OrderHistory[] = [
-    {
-      id: 1,
-      restaurantName: "Mario's Pizzeria",
-      date: '2024-01-15',
-      total: 32.99,
-      status: 'Delivered',
-      items: ['Margherita Pizza', 'Bruschetta', 'Tiramisu'],
-    },
-    {
-      id: 2,
-      restaurantName: 'Burger Palace',
-      date: '2024-01-10',
-      total: 18.5,
-      status: 'Delivered',
-      items: ['Classic Cheeseburger', 'Buffalo Wings'],
-    },
-    {
-      id: 3,
-      restaurantName: 'Dragon Wok',
-      date: '2024-01-08',
-      total: 25.75,
-      status: 'Delivered',
-      items: ['Pad Thai', 'Spring Rolls', 'Green Tea'],
-    },
-  ];
+  // Real order history from CartService
+  recentOrders: Order[] = [];
 
   // Settings
   notificationsEnabled = true;
   emailNotifications = true;
   locationServices = true;
 
-  constructor(private router: Router, public themeService: ThemeService) {
+  constructor(
+    private router: Router,
+    public themeService: ThemeService,
+    private cartService: CartService
+  ) {
     addIcons({
       person,
       personOutline,
@@ -177,6 +157,25 @@ export class Tab3Page {
       moonOutline,
       sunnyOutline,
     });
+  }
+
+  ngOnInit() {
+    // Load real order history from CartService
+    this.cartService.orderHistory$.subscribe((orders) => {
+      this.recentOrders = this.cartService.getRecentOrders(3);
+      this.user.totalOrders = orders.length;
+    });
+  }
+
+  // Method to reorder from previous order
+  reorderItems(order: Order) {
+    // Add all items from the order back to cart
+    order.items.forEach((item) => {
+      this.cartService.addToCart(item);
+    });
+
+    // Navigate to cart
+    this.router.navigate(['/tabs/tab2']);
   }
 
   // Navigation methods
@@ -246,8 +245,34 @@ export class Tab3Page {
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric',
     });
+  }
+
+  // New helper methods for real Order interface
+  formatOrderDate(date: Date): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  getOrderItemsText(order: Order): string {
+    return order.items.map((item) => item.name).join(', ');
+  }
+
+  getOrderStatusText(status: string): string {
+    switch (status) {
+      case 'preparing':
+        return 'Preparing';
+      case 'out_for_delivery':
+        return 'Out for Delivery';
+      case 'delivered':
+        return 'Delivered';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return 'Delivered';
+    }
   }
 
   getMembershipColor(): string {

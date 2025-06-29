@@ -11,9 +11,6 @@ import {
   IonButtons,
   IonCard,
   IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonList,
   IonItem,
   IonLabel,
   IonIcon,
@@ -24,11 +21,6 @@ import {
   IonImg,
   IonChip,
   IonBadge,
-  IonNote,
-  IonSelect,
-  IonSelectOption,
-  IonInput,
-  IonCheckbox,
   AlertController,
   LoadingController,
 } from '@ionic/angular/standalone';
@@ -45,27 +37,13 @@ import {
   bag,
   receipt,
   lockClosed,
-  add,
 } from 'ionicons/icons';
-
-interface CartItem {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  quantity: number;
-  restaurantName: string;
-  isVegetarian?: boolean;
-  isPopular?: boolean;
-}
-
-interface DeliveryAddress {
-  id: number;
-  title: string;
-  address: string;
-  isDefault: boolean;
-}
+import {
+  CartService,
+  CartItem,
+  DeliveryAddress,
+  PromoCode,
+} from '../services/cart.service';
 
 interface PaymentMethod {
   id: number;
@@ -82,6 +60,8 @@ interface PaymentMethod {
   styleUrls: ['./checkout.page.scss'],
   standalone: true,
   imports: [
+    CommonModule,
+    FormsModule,
     IonContent,
     IonHeader,
     IonTitle,
@@ -90,11 +70,6 @@ interface PaymentMethod {
     IonButtons,
     IonCard,
     IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonList,
-    IonItem,
-    IonLabel,
     IonIcon,
     IonButton,
     IonTextarea,
@@ -103,30 +78,30 @@ interface PaymentMethod {
     IonImg,
     IonChip,
     IonBadge,
-    IonNote,
-    IonSelect,
-    IonSelectOption,
-    IonInput,
-    IonCheckbox,
-    CommonModule,
-    FormsModule,
+    IonItem,
+    IonLabel,
   ],
 })
 export class CheckoutPage implements OnInit {
-  // Order data from cart
+  // Order data from cart service
   cartItems: CartItem[] = [];
-  selectedAddress: DeliveryAddress | null = null;
+  selectedAddress: DeliveryAddress = {
+    id: 1,
+    title: 'Home',
+    address: '123 Main Street, Apt 4B, New York, NY 10001',
+    isDefault: true,
+  };
+
   subtotal = 0;
   deliveryFee = 0;
   tax = 0;
   promoDiscount = 0;
   total = 0;
-  appliedPromo: { code: string; discount: number } | null = null;
+  appliedPromo: PromoCode | null = null;
 
   // Checkout specific data
   selectedPaymentMethod: number = 1;
   orderNotes = '';
-  savePaymentMethod = false;
   estimatedDeliveryTime = '25-35 min';
 
   // Payment methods (simplified to card and cash only)
@@ -152,7 +127,8 @@ export class CheckoutPage implements OnInit {
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private cartService: CartService
   ) {
     addIcons({
       arrowBack,
@@ -166,28 +142,36 @@ export class CheckoutPage implements OnInit {
       bag,
       receipt,
       lockClosed,
-      add,
     });
-
-    // Get navigation state data from cart
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      this.cartItems = navigation.extras.state['cartItems'] || [];
-      this.selectedAddress = navigation.extras.state['selectedAddress'];
-      this.subtotal = navigation.extras.state['subtotal'] || 0;
-      this.deliveryFee = navigation.extras.state['deliveryFee'] || 0;
-      this.tax = navigation.extras.state['tax'] || 0;
-      this.promoDiscount = navigation.extras.state['promoDiscount'] || 0;
-      this.total = navigation.extras.state['total'] || 0;
-      this.appliedPromo = navigation.extras.state['appliedPromo'];
-    }
   }
 
   ngOnInit() {
+    // Subscribe to cart items and calculate totals
+    this.cartService.cartItems$.subscribe((items) => {
+      this.cartItems = items;
+      this.calculateTotals();
+    });
+
     // If no cart data, redirect back to cart
     if (this.cartItems.length === 0) {
       this.router.navigate(['/tabs/tab2']);
     }
+
+    // Get data from navigation state if available (for promo codes)
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      this.appliedPromo = navigation.extras.state['appliedPromo'];
+      this.promoDiscount = navigation.extras.state['promoDiscount'] || 0;
+      this.calculateTotals();
+    }
+  }
+
+  // Calculate all totals using cart service
+  private calculateTotals() {
+    this.subtotal = this.cartService.getSubtotal();
+    this.deliveryFee = this.cartService.calculateDeliveryFee();
+    this.tax = this.cartService.calculateTax();
+    this.total = this.cartService.calculateTotal(this.promoDiscount);
   }
 
   // Payment method selection
@@ -195,33 +179,12 @@ export class CheckoutPage implements OnInit {
     this.selectedPaymentMethod = paymentMethodId;
   }
 
-  // Add new payment method
-  async addPaymentMethod() {
-    const alert = await this.alertController.create({
-      header: 'Add Payment Method',
-      message: 'Choose a payment method to add',
-      buttons: [
-        {
-          text: 'Credit/Debit Card',
-          handler: () => {
-            this.router.navigate(['/add-card']);
-          },
-        },
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
-      ],
-    });
-    await alert.present();
-  }
-
   // Edit delivery address
   editAddress() {
     this.router.navigate(['/addresses']);
   }
 
-  // Place order
+  // Place order using cart service
   async placeOrder() {
     const selectedMethod = this.getSelectedPaymentMethod();
 
@@ -262,15 +225,25 @@ export class CheckoutPage implements OnInit {
     setTimeout(async () => {
       await loading.dismiss();
 
+      // Create order using cart service (this will clear the cart automatically)
+      const order = this.cartService.createOrder(
+        this.selectedAddress,
+        'Credit Card',
+        this.orderNotes,
+        this.appliedPromo || undefined
+      );
+
       // Show success alert
       const alert = await this.alertController.create({
         header: 'Order Placed!',
-        message: `Your order has been confirmed. Estimated delivery: ${this.estimatedDeliveryTime}`,
+        message: `Order #${order.id} has been confirmed. Estimated delivery: ${order.estimatedDeliveryTime}`,
         buttons: [
           {
             text: 'Track Order',
             handler: () => {
-              this.router.navigate(['/order-tracking']);
+              this.router.navigate(['/order-tracking'], {
+                state: { orderId: order.id },
+              });
             },
           },
           {
@@ -287,18 +260,30 @@ export class CheckoutPage implements OnInit {
 
   // Process cash on delivery
   private async processCashPayment() {
+    // Create order using cart service (this will clear the cart automatically)
+    const order = this.cartService.createOrder(
+      this.selectedAddress,
+      'Cash on Delivery',
+      this.orderNotes,
+      this.appliedPromo || undefined
+    );
+
     const alert = await this.alertController.create({
       header: 'Cash on Delivery Confirmed',
-      message: `Your order has been placed! Please have $${this.total.toFixed(
+      message: `Order #${
+        order.id
+      } has been placed! Please have $${order.total.toFixed(
         2
       )} ready when the delivery arrives. Estimated time: ${
-        this.estimatedDeliveryTime
+        order.estimatedDeliveryTime
       }`,
       buttons: [
         {
           text: 'Track Order',
           handler: () => {
-            this.router.navigate(['/order-tracking']);
+            this.router.navigate(['/order-tracking'], {
+              state: { orderId: order.id },
+            });
           },
         },
         {
@@ -319,9 +304,9 @@ export class CheckoutPage implements OnInit {
     );
   }
 
-  // Calculate total items
+  // Calculate total items using cart service
   get totalItems(): number {
-    return this.cartItems.reduce((total, item) => total + item.quantity, 0);
+    return this.cartService.getTotalItems();
   }
 
   // Format delivery time

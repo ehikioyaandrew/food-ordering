@@ -45,7 +45,7 @@
             ></ion-icon>
             <div>
               <h3 class="font-bold text-gray-900 dark:text-white">
-                {{cartItems[0]?.restaurantName}}
+                {{cartItems[0].restaurantName}}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
                 {{totalItems}} items • Estimated {{estimatedDeliveryTime}}
@@ -113,7 +113,7 @@
             <div class="flex-1">
               <div class="flex items-center justify-between mb-2">
                 <h3 class="font-bold text-gray-900 dark:text-white">
-                  {{selectedAddress?.title}}
+                  {{selectedAddress.title}}
                 </h3>
                 <ion-button
                   fill="clear"
@@ -125,7 +125,7 @@
                 </ion-button>
               </div>
               <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                {{selectedAddress?.address}}
+                {{selectedAddress.address}}
               </p>
               <div class="flex items-center gap-2">
                 <ion-icon
@@ -159,9 +159,6 @@
             <div
               *ngFor="let method of paymentMethods; let last = last"
               class="p-4"
-              [class.border-b]="!last"
-              [class.border-gray-100]="!last"
-              [class.dark:border-gray-700]="!last"
             >
               <ion-item class="--background: transparent">
                 <ion-radio
@@ -191,19 +188,6 @@
               </ion-item>
             </div>
           </ion-radio-group>
-
-          <!-- Add Payment Method -->
-          <div class="p-4 border-t border-gray-100 dark:border-gray-700">
-            <ion-button
-              fill="clear"
-              expand="block"
-              (click)="addPaymentMethod()"
-              class="text-food-orange dark:text-food-orange-dark"
-            >
-              <ion-icon name="add" slot="start"></ion-icon>
-              Add New Payment Method
-            </ion-button>
-          </div>
         </ion-card-content>
       </ion-card>
     </div>

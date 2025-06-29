@@ -36,25 +36,12 @@ import {
   chevronForward,
 } from 'ionicons/icons';
 import { ThemeService } from '../services/theme.service';
-
-interface CartItem {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  quantity: number;
-  restaurantName: string;
-  isVegetarian?: boolean;
-  isPopular?: boolean;
-}
-
-interface DeliveryAddress {
-  id: number;
-  title: string;
-  address: string;
-  isDefault: boolean;
-}
+import {
+  CartService,
+  CartItem,
+  DeliveryAddress,
+  PromoCode,
+} from '../services/cart.service';
 
 @Component({
   selector: 'app-tab2',
@@ -84,80 +71,56 @@ interface DeliveryAddress {
 })
 export class Tab2Page implements OnInit {
   cartItems: CartItem[] = [];
+  selectedAddress: DeliveryAddress = {
+    id: 1,
+    title: 'Home',
+    address: '123 Main Street, Apt 4B, New York, NY 10001',
+    isDefault: true,
+  };
+
+  // Promo code functionality
   promoCode = '';
-  selectedAddress: DeliveryAddress | null = null;
+  appliedPromo: PromoCode | null = null;
   showPromoInput = false;
-  appliedPromo: { code: string; discount: number } | null = null;
 
-  // Mock data - in a real app, this would come from a cart service
-  mockCartItems: CartItem[] = [
-    {
-      id: 3,
-      name: 'Margherita Pizza',
-      description:
-        'San Marzano tomatoes, fresh mozzarella, basil, and extra virgin olive oil',
-      price: 18.99,
-      image:
-        'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=300&h=200&fit=crop',
-      quantity: 2,
-      restaurantName: "Mario's Pizzeria",
-      isVegetarian: true,
-      isPopular: true,
-    },
-    {
-      id: 1,
-      name: 'Bruschetta Classica',
-      description:
-        'Toasted bread topped with fresh tomatoes, basil, and garlic',
-      price: 8.99,
-      image:
-        'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=300&h=200&fit=crop',
-      quantity: 1,
-      restaurantName: "Mario's Pizzeria",
-      isVegetarian: true,
-    },
-    {
-      id: 5,
-      name: 'Tiramisu',
-      description:
-        'Classic Italian dessert with espresso-soaked ladyfingers and mascarpone',
-      price: 7.99,
-      image:
-        'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=200&fit=crop',
-      quantity: 1,
-      restaurantName: "Mario's Pizzeria",
-      isPopular: true,
-    },
-  ];
-
-  deliveryAddresses: DeliveryAddress[] = [
+  // Available addresses
+  addresses: DeliveryAddress[] = [
     {
       id: 1,
       title: 'Home',
-      address: '123 Main St, Downtown, City 10001',
+      address: '123 Main Street, Apt 4B, New York, NY 10001',
       isDefault: true,
     },
     {
       id: 2,
       title: 'Work',
-      address: '456 Business Ave, Business District, City 10002',
+      address: '456 Business Ave, Suite 200, New York, NY 10002',
       isDefault: false,
     },
     {
       id: 3,
       title: 'Other',
-      address: '789 Park Lane, Residential Area, City 10003',
+      address: '789 Friend Street, New York, NY 10003',
       isDefault: false,
     },
   ];
 
-  availablePromoCodes = [
-    { code: 'SAVE10', discount: 0.1, description: '10% off your order' },
-    { code: 'NEWUSER', discount: 0.15, description: '15% off for new users' },
-    { code: 'FREESHIP', discount: 0, description: 'Free delivery' },
+  // Available promo codes
+  availablePromoCodes: PromoCode[] = [
+    {
+      code: 'SAVE10',
+      discount: 5.0,
+      description: 'Save $5 on orders over $25',
+    },
+    { code: 'NEWUSER', discount: 3.0, description: 'New user discount' },
+    { code: 'FREESHIP', discount: 2.99, description: 'Free delivery' },
   ];
 
-  constructor(private router: Router, public themeService: ThemeService) {
+  constructor(
+    public themeService: ThemeService,
+    private router: Router,
+    private cartService: CartService
+  ) {
     addIcons({
       add,
       remove,
@@ -174,84 +137,33 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
-    // Initialize cart with mock data
-    this.cartItems = [...this.mockCartItems];
-    this.selectedAddress =
-      this.deliveryAddresses.find((addr) => addr.isDefault) ||
-      this.deliveryAddresses[0];
+    // Subscribe to cart items from service
+    this.cartService.cartItems$.subscribe((items) => {
+      this.cartItems = items;
+    });
   }
 
-  get subtotal(): number {
-    return this.cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-  }
-
-  get deliveryFee(): number {
-    return this.appliedPromo?.code === 'FREESHIP' ? 0 : 2.99;
-  }
-
-  get tax(): number {
-    return this.subtotal * 0.08; // 8% tax
-  }
-
-  get promoDiscount(): number {
-    if (!this.appliedPromo) return 0;
-    return this.subtotal * this.appliedPromo.discount;
-  }
-
-  get total(): number {
-    return this.subtotal + this.deliveryFee + this.tax - this.promoDiscount;
-  }
-
-  get totalItems(): number {
-    return this.cartItems.reduce((total, item) => total + item.quantity, 0);
-  }
-
+  // Cart management methods using CartService
   addToCart(item: CartItem) {
-    const existingItem = this.cartItems.find(
-      (cartItem) => cartItem.id === item.id
-    );
-    if (existingItem) {
-      existingItem.quantity++;
-    }
+    this.cartService.addToCart({ ...item, quantity: 1 });
   }
 
   removeFromCart(item: CartItem) {
-    const existingItem = this.cartItems.find(
-      (cartItem) => cartItem.id === item.id
-    );
-    if (existingItem && existingItem.quantity > 1) {
-      existingItem.quantity--;
-    } else if (existingItem && existingItem.quantity === 1) {
-      // Remove item completely when quantity reaches 0
-      this.cartItems = this.cartItems.filter(
-        (cartItem) => cartItem.id !== item.id
-      );
-    }
+    this.cartService.removeFromCart(item.id);
   }
 
   deleteFromCart(item: CartItem) {
-    this.cartItems = this.cartItems.filter(
-      (cartItem) => cartItem.id !== item.id
-    );
+    this.cartService.deleteItemFromCart(item.id);
   }
 
-  selectAddress(address: DeliveryAddress) {
-    this.selectedAddress = address;
-  }
-
+  // Address management
   onAddressChange(event: any) {
     const addressId = event.detail.value;
-    const address = this.deliveryAddresses.find(
-      (addr) => addr.id === addressId
-    );
-    if (address) {
-      this.selectedAddress = address;
-    }
+    this.selectedAddress =
+      this.addresses.find((addr) => addr.id === addressId) || this.addresses[0];
   }
 
+  // Promo code management
   togglePromoInput() {
     this.showPromoInput = !this.showPromoInput;
     if (!this.showPromoInput) {
@@ -259,20 +171,25 @@ export class Tab2Page implements OnInit {
     }
   }
 
+  onPromoCodeClick(promoCode: string) {
+    this.promoCode = promoCode;
+    this.applyPromoCode();
+  }
+
   applyPromoCode() {
     if (!this.promoCode.trim()) return;
 
     const promo = this.availablePromoCodes.find(
-      (p) => p.code.toLowerCase() === this.promoCode.trim().toLowerCase()
+      (p) => p.code.toLowerCase() === this.promoCode.toLowerCase()
     );
 
     if (promo) {
-      this.appliedPromo = { code: promo.code, discount: promo.discount };
+      this.appliedPromo = promo;
       this.promoCode = '';
       this.showPromoInput = false;
     } else {
-      // In a real app, you'd show a toast or alert for invalid promo code
-      console.log('Invalid promo code');
+      // Handle invalid promo code
+      alert('Invalid promo code');
     }
   }
 
@@ -280,28 +197,44 @@ export class Tab2Page implements OnInit {
     this.appliedPromo = null;
   }
 
-  continueShopping() {
-    this.router.navigate(['/tabs/tab1']);
+  // Calculated properties using CartService
+  get totalItems(): number {
+    return this.cartService.getTotalItems();
   }
 
+  get subtotal(): number {
+    return this.cartService.getSubtotal();
+  }
+
+  get deliveryFee(): number {
+    return this.cartService.calculateDeliveryFee();
+  }
+
+  get tax(): number {
+    return this.cartService.calculateTax();
+  }
+
+  get promoDiscount(): number {
+    return this.appliedPromo?.discount || 0;
+  }
+
+  get total(): number {
+    return this.cartService.calculateTotal(this.promoDiscount);
+  }
+
+  // Navigation
   proceedToCheckout() {
-    // Navigate to checkout page with cart data
+    if (this.cartItems.length === 0) return;
+
     this.router.navigate(['/checkout'], {
       state: {
-        cartItems: this.cartItems,
-        selectedAddress: this.selectedAddress,
-        subtotal: this.subtotal,
-        deliveryFee: this.deliveryFee,
-        tax: this.tax,
-        promoDiscount: this.promoDiscount,
-        total: this.total,
         appliedPromo: this.appliedPromo,
+        promoDiscount: this.promoDiscount,
       },
     });
   }
 
-  onPromoCodeClick(promoCode: string) {
-    this.promoCode = promoCode;
-    this.applyPromoCode();
+  goToRestaurants() {
+    this.router.navigate(['/tabs/tab1']);
   }
 }

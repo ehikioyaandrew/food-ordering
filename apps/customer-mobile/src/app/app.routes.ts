@@ -7,6 +7,14 @@ export const routes: Routes = [
   },
   {
     path: 'checkout',
-    loadComponent: () => import('./checkout/checkout.page').then( m => m.CheckoutPage)
+    loadComponent: () =>
+      import('./checkout/checkout.page').then((m) => m.CheckoutPage),
+  },
+  {
+    path: 'order-tracking',
+    loadComponent: () =>
+      import('./order-tracking/order-tracking.component').then(
+        (m) => m.OrderTrackingComponent
+      ),
   },
 ];

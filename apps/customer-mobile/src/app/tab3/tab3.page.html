@@ -142,16 +142,16 @@
                   {{order.restaurantName}}
                 </h4>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">
-                  {{order.items.join(', ')}}
+                  {{getOrderItemsText(order)}}
                 </p>
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-500 dark:text-gray-400">
-                    {{formatDate(order.date)}}
+                    {{formatOrderDate(order.createdAt)}}
                   </span>
                   <ion-badge
                     class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs"
                   >
-                    {{order.status}}
+                    {{getOrderStatusText(order.status)}}
                   </ion-badge>
                 </div>
               </div>
@@ -163,6 +163,7 @@
                   fill="clear"
                   size="small"
                   class="h-8 text-food-orange dark:text-food-orange-dark"
+                  (click)="reorderItems(order)"
                 >
                   Reorder
                 </ion-button>
