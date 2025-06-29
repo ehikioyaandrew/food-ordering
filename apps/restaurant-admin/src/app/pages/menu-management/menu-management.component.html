@@ -1,0 +1,681 @@
+<!-- Menu Management Header -->
+<div class="flex items-center justify-between mb-6">
+  <div class="flex items-center gap-4">
+    <button
+      (click)="goBack()"
+      class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+    >
+      <svg
+        class="w-5 h-5 text-gray-600 dark:text-gray-400"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+        />
+      </svg>
+    </button>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Menu Management
+      </h1>
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Manage your restaurant's menu items and categories
+      </p>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button (click)="openAddCategoryModal()" class="btn-secondary">
+      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+      </svg>
+      Add Category
+    </button>
+    <button (click)="openAddItemModal()" class="btn-primary">
+      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+      </svg>
+      Add Menu Item
+    </button>
+  </div>
+</div>
+
+<!-- Search and Filters -->
+<div class="card p-6 mb-6">
+  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+    <!-- Search -->
+    <div class="flex-1">
+      <div class="relative">
+        <svg
+          class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5.5 12.49 5.5 10.5S7.01 7 9.5 7 13.5 8.51 13.5 10.5 11.99 14 9.5 14z"
+          />
+        </svg>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          placeholder="Search menu items..."
+          class="pl-10 input-field"
+        />
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="lg:w-64">
+      <select
+        [(ngModel)]="selectedCategory"
+        (change)="onCategoryChange(selectedCategory)"
+        class="input-field"
+      >
+        <option value="all">All Categories</option>
+        <option
+          *ngFor="let category of categories; trackBy: trackByFn"
+          [value]="category.name"
+        >
+          {{ category.name }} ({{ category.itemCount }})
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Categories Overview -->
+<div class="card p-6 mb-6">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+      Categories
+    </h2>
+    <span class="text-sm text-gray-500 dark:text-gray-400"
+      >{{ categories.length }} total</span
+    >
+  </div>
+
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+  >
+    <div
+      *ngFor="let category of categories; trackBy: trackByFn"
+      class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:shadow-md transition-shadow"
+    >
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-medium text-gray-900 dark:text-white">
+          {{ category.name }}
+        </h3>
+        <div class="flex items-center gap-1">
+          <button
+            (click)="openEditCategoryModal(category)"
+            class="p-1 text-gray-400 hover:text-food-orange rounded"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="deleteCategory(category)"
+            class="p-1 text-gray-400 hover:text-red-600 rounded"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        {{ category.description }}
+      </p>
+      <div class="flex items-center justify-between">
+        <span class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+          {{ category.itemCount }} items
+        </span>
+        <span
+          class="text-xs px-2 py-1 rounded"
+          [ngClass]="{
+            'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400':
+              category.isActive,
+            'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400':
+              !category.isActive
+          }"
+        >
+          {{ category.isActive ? "Active" : "Inactive" }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Items -->
+<div class="card p-6">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+      Menu Items
+      <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
+        ({{ filteredItems.length }} of {{ menuItems.length }})
+      </span>
+    </h2>
+  </div>
+
+  <!-- Menu Items Grid -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    *ngIf="filteredItems.length > 0"
+  >
+    <div
+      *ngFor="let item of filteredItems; trackBy: trackByFn"
+      class="border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
+    >
+      <!-- Item Image -->
+      <div class="relative h-48 bg-gray-200 dark:bg-gray-700">
+        <img
+          [src]="item.image"
+          [alt]="item.name"
+          class="w-full h-full object-cover"
+          (error)="
+            $any($event.target).src =
+              'https://images.unsplash.com/photo-1546548970-71785318a17b?w=400'
+          "
+        />
+        <div class="absolute top-2 right-2 flex gap-2">
+          <span
+            *ngIf="item.isPopular"
+            class="px-2 py-1 bg-yellow-400 text-yellow-900 text-xs font-medium rounded"
+          >
+            Popular
+          </span>
+          <span
+            class="px-2 py-1 text-xs font-medium rounded"
+            [ngClass]="{
+              'bg-green-400 text-green-900': item.isAvailable,
+              'bg-red-400 text-red-900': !item.isAvailable
+            }"
+          >
+            {{ item.isAvailable ? "Available" : "Unavailable" }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Item Details -->
+      <div class="p-4">
+        <div class="flex items-start justify-between mb-2">
+          <h3 class="font-semibold text-gray-900 dark:text-white">
+            {{ item.name }}
+          </h3>
+          <span class="text-lg font-bold text-food-orange">{{
+            formatPrice(item.price)
+          }}</span>
+        </div>
+
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          {{ item.description }}
+        </p>
+
+        <div
+          class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3"
+        >
+          <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{{
+            item.category
+          }}</span>
+          <span>{{ item.prepTime }} min prep</span>
+        </div>
+
+        <!-- Ingredients -->
+        <div class="mb-3" *ngIf="item.ingredients.length > 0">
+          <div class="flex flex-wrap gap-1">
+            <span
+              *ngFor="let ingredient of item.ingredients.slice(0, 3)"
+              class="text-xs bg-food-orange/10 text-food-orange px-2 py-1 rounded"
+            >
+              {{ ingredient }}
+            </span>
+            <span
+              *ngIf="item.ingredients.length > 3"
+              class="text-xs text-gray-500 dark:text-gray-400"
+            >
+              +{{ item.ingredients.length - 3 }} more
+            </span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-2">
+          <button
+            (click)="openEditItemModal(item)"
+            class="flex-1 bg-food-orange hover:bg-food-orange/90 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors"
+          >
+            Edit
+          </button>
+          <button
+            (click)="toggleItemAvailability(item)"
+            class="px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+            [ngClass]="{
+              'bg-green-100 hover:bg-green-200 text-green-800 dark:bg-green-900/20 dark:text-green-400':
+                !item.isAvailable,
+              'bg-red-100 hover:bg-red-200 text-red-800 dark:bg-red-900/20 dark:text-red-400':
+                item.isAvailable
+            }"
+          >
+            {{ item.isAvailable ? "Hide" : "Show" }}
+          </button>
+          <button
+            (click)="toggleItemPopular(item)"
+            class="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition-colors"
+            [ngClass]="{
+              'bg-yellow-50 dark:bg-yellow-900/20': item.isPopular
+            }"
+          >
+            <svg
+              class="w-4 h-4"
+              [ngClass]="{ 'fill-current': item.isPopular }"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="deleteItem(item)"
+            class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredItems.length === 0" class="text-center py-12">
+    <svg
+      class="w-16 h-16 mx-auto text-gray-400 mb-4"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1.87C18 .84 17.16 0 16.13 0h-1.25c-1.03 0-1.87.84-1.87 1.87v3.18h-2.23c-.68 0-1.24.56-1.24 1.24s.56 1.24 1.24 1.24H18l-1.67 14.77c-.1.82.53 1.64 1.41 1.64z"
+      />
+    </svg>
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+      No menu items found
+    </h3>
+    <p class="text-gray-600 dark:text-gray-400 mb-4">
+      {{
+        searchTerm || selectedCategory !== "all"
+          ? "Try adjusting your search or filter criteria."
+          : "Get started by adding your first menu item."
+      }}
+    </p>
+    <button (click)="openAddItemModal()" class="btn-primary">
+      Add Menu Item
+    </button>
+  </div>
+</div>
+
+<!-- Add/Edit Item Modal -->
+<div
+  *ngIf="showAddItemModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  (click)="closeItemModal()"
+>
+  <div
+    class="bg-white dark:bg-dark-bg-card rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          {{ editingItem ? "Edit Menu Item" : "Add New Menu Item" }}
+        </h2>
+        <button
+          (click)="closeItemModal()"
+          class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveItem()" class="space-y-4">
+        <!-- Basic Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Item Name *
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="itemForm.name"
+              name="name"
+              required
+              class="input-field"
+              placeholder="Enter item name"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Price (₦) *
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="itemForm.price"
+              name="price"
+              required
+              min="0"
+              class="input-field"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Description
+          </label>
+          <textarea
+            [(ngModel)]="itemForm.description"
+            name="description"
+            rows="3"
+            class="input-field"
+            placeholder="Describe your menu item"
+          ></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Category *
+            </label>
+            <select
+              [(ngModel)]="itemForm.category"
+              name="category"
+              required
+              class="input-field"
+            >
+              <option
+                *ngFor="let category of categories"
+                [value]="category.name"
+              >
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Preparation Time (minutes)
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="itemForm.prepTime"
+              name="prepTime"
+              min="1"
+              class="input-field"
+              placeholder="10"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Image URL
+          </label>
+          <input
+            type="url"
+            [(ngModel)]="itemForm.image"
+            name="image"
+            class="input-field"
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+
+        <!-- Ingredients -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Ingredients
+            </label>
+            <button
+              type="button"
+              (click)="addIngredient()"
+              class="text-sm text-food-orange hover:text-food-orange/80"
+            >
+              + Add Ingredient
+            </button>
+          </div>
+          <div class="space-y-2">
+            <div
+              *ngFor="let ingredient of itemForm.ingredients; let i = index"
+              class="flex items-center gap-2"
+            >
+              <input
+                type="text"
+                [(ngModel)]="itemForm.ingredients![i]"
+                [name]="'ingredient_' + i"
+                class="input-field flex-1"
+                placeholder="Ingredient name"
+              />
+              <button
+                type="button"
+                (click)="removeIngredient(i)"
+                class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Allergens -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Allergens
+            </label>
+            <button
+              type="button"
+              (click)="addAllergen()"
+              class="text-sm text-food-orange hover:text-food-orange/80"
+            >
+              + Add Allergen
+            </button>
+          </div>
+          <div class="space-y-2">
+            <div
+              *ngFor="let allergen of itemForm.allergens; let i = index"
+              class="flex items-center gap-2"
+            >
+              <input
+                type="text"
+                [(ngModel)]="itemForm.allergens![i]"
+                [name]="'allergen_' + i"
+                class="input-field flex-1"
+                placeholder="Allergen name"
+              />
+              <button
+                type="button"
+                (click)="removeAllergen(i)"
+                class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Toggles -->
+        <div class="flex items-center gap-6">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              [(ngModel)]="itemForm.isAvailable"
+              name="isAvailable"
+              class="rounded border-gray-300 text-food-orange focus:ring-food-orange"
+            />
+            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+              >Available</span
+            >
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              [(ngModel)]="itemForm.isPopular"
+              name="isPopular"
+              class="rounded border-gray-300 text-food-orange focus:ring-food-orange"
+            />
+            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+              >Mark as Popular</span
+            >
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-4">
+          <button type="submit" class="btn-primary">
+            {{ editingItem ? "Update Item" : "Add Item" }}
+          </button>
+          <button
+            type="button"
+            (click)="closeItemModal()"
+            class="btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Category Modal -->
+<div
+  *ngIf="showAddCategoryModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  (click)="closeCategoryModal()"
+>
+  <div
+    class="bg-white dark:bg-dark-bg-card rounded-xl max-w-md w-full"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          {{ editingCategory ? "Edit Category" : "Add New Category" }}
+        </h2>
+        <button
+          (click)="closeCategoryModal()"
+          class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveCategory()" class="space-y-4">
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Category Name *
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="categoryForm.name"
+            name="name"
+            required
+            class="input-field"
+            placeholder="Enter category name"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Description
+          </label>
+          <textarea
+            [(ngModel)]="categoryForm.description"
+            name="description"
+            rows="3"
+            class="input-field"
+            placeholder="Describe this category"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              [(ngModel)]="categoryForm.isActive"
+              name="isActive"
+              class="rounded border-gray-300 text-food-orange focus:ring-food-orange"
+            />
+            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+              >Active</span
+            >
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-4">
+          <button type="submit" class="btn-primary">
+            {{ editingCategory ? "Update Category" : "Add Category" }}
+          </button>
+          <button
+            type="button"
+            (click)="closeCategoryModal()"
+            class="btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
