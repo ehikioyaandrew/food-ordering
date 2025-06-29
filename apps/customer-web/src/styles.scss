@@ -1,0 +1,140 @@
+/* You can add global styles to this file, and also import other style files */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Inter font for consistent typography */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+}
+
+/* Scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* Custom utilities for POS system */
+.pos-card {
+  @apply bg-white dark:bg-dark-bg-card rounded-2xl shadow-card dark:shadow-card-dark;
+}
+
+.pos-button-primary {
+  @apply bg-food-orange hover:bg-food-orange-dark text-white font-medium px-4 py-2 rounded-xl transition-colors duration-200;
+}
+
+.pos-button-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium px-4 py-2 rounded-xl transition-colors duration-200;
+}
+
+/* Touch-friendly button sizing for POS */
+.pos-touch-button {
+  @apply min-h-[48px] min-w-[48px] flex items-center justify-center;
+}
+
+/* Grid layouts for POS interface */
+.pos-grid {
+  @apply grid gap-4;
+}
+
+.pos-grid-1 {
+  grid-template-columns: 1fr;
+}
+.pos-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.pos-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.pos-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+.pos-grid-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* Responsive grid for different screen sizes */
+@media (max-width: 768px) {
+  .pos-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pos-grid-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bounce-in {
+  animation: bounceIn 0.5s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

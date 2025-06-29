@@ -1,0 +1,251 @@
+<!-- Payment Modal Overlay -->
+<div
+  *ngIf="isOpen"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  (click)="closeModal()"
+>
+  <div
+    class="bg-white dark:bg-dark-bg-card rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="p-6 border-b border-gray-200 dark:border-dark-border">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Process Payment
+          </h2>
+          <p class="text-gray-600 dark:text-gray-300">
+            {{ totalItemsCount }} item(s) • Total: {{ formatPrice(total) }}
+          </p>
+        </div>
+        <button
+          (click)="closeModal()"
+          class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="p-6">
+      <!-- Order Summary -->
+      <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">
+          Order Summary
+        </h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-300">Subtotal</span>
+            <span class="font-medium">{{ formatPrice(subtotal) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-300">Tax (8%)</span>
+            <span class="font-medium">{{ formatPrice(tax) }}</span>
+          </div>
+          <div class="border-t pt-2 flex justify-between text-lg font-bold">
+            <span>Total</span>
+            <span class="text-food-orange">{{ formatPrice(total) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="mb-6">
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">
+          Select Payment Method
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <button
+            *ngFor="let method of paymentMethods"
+            [class]="
+              selectedPaymentMethod === method.id
+                ? 'bg-food-orange text-white border-food-orange'
+                : 'bg-white dark:bg-dark-bg-card text-gray-900 dark:text-white border-gray-200 dark:border-gray-600 hover:border-food-orange'
+            "
+            class="p-4 border-2 rounded-xl transition-all duration-200 text-left"
+            (click)="selectPaymentMethod(method.id)"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="p-2 rounded-lg"
+                [class]="
+                  selectedPaymentMethod === method.id
+                    ? 'bg-white bg-opacity-20'
+                    : 'bg-gray-100 dark:bg-gray-600'
+                "
+              >
+                <svg
+                  class="w-5 h-5"
+                  [class]="
+                    selectedPaymentMethod === method.id
+                      ? 'text-white'
+                      : 'text-gray-600 dark:text-gray-300'
+                  "
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path [attr.d]="getPaymentMethodIcon(method.icon)" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="font-medium">{{ method.name }}</div>
+                <div class="text-sm opacity-75">{{ method.description }}</div>
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cash Payment Details -->
+      <div
+        *ngIf="selectedPaymentMethod === 'cash'"
+        class="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl"
+      >
+        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">
+          Cash Payment Details
+        </h4>
+
+        <!-- Quick Amount Buttons -->
+        <div class="mb-4">
+          <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+            Quick amounts:
+          </p>
+          <div class="grid grid-cols-3 gap-2">
+            <button
+              *ngFor="let amount of quickCashAmounts"
+              (click)="setCashAmount(amount.value)"
+              class="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-food-orange transition-colors text-sm font-medium"
+            >
+              {{ amount.label }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Cash Input -->
+        <div class="mb-4">
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Amount Received</label
+          >
+          <input
+            type="number"
+            [value]="cashReceived"
+            (input)="onCashInputChange($event)"
+            placeholder="Enter amount received"
+            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-bg-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-food-orange focus:border-transparent"
+          />
+        </div>
+
+        <!-- Change Calculation -->
+        <div class="p-3 bg-white dark:bg-gray-800 rounded-lg border">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600 dark:text-gray-300">Amount Due:</span>
+            <span class="font-bold text-lg">{{ formatPrice(total) }}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600 dark:text-gray-300"
+              >Amount Received:</span
+            >
+            <span class="font-bold text-lg">{{
+              formatPrice(cashReceived)
+            }}</span>
+          </div>
+          <div class="border-t pt-2 mt-2 flex justify-between items-center">
+            <span class="font-semibold">Change to Give:</span>
+            <span
+              class="font-bold text-xl"
+              [class]="changeAmount >= 0 ? 'text-green-600' : 'text-red-600'"
+            >
+              {{ formatPrice(changeAmount) }}
+            </span>
+          </div>
+          <div
+            *ngIf="cashReceived > 0 && !isValidCashAmount"
+            class="mt-2 text-red-600 text-sm"
+          >
+            ⚠️ Insufficient amount. Need
+            {{ formatPrice(total - cashReceived) }} more.
+          </div>
+        </div>
+      </div>
+
+      <!-- Non-Cash Payment Info -->
+      <div
+        *ngIf="selectedPaymentMethod !== 'cash'"
+        class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl"
+      >
+        <div class="flex items-start gap-3">
+          <svg
+            class="w-5 h-5 text-blue-600 mt-0.5"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+          <div>
+            <h4 class="font-semibold text-gray-900 dark:text-white">
+              {{ selectedPaymentMethodName }}
+            </h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              <span *ngIf="selectedPaymentMethod === 'card'">
+                Insert or tap card, then follow prompts on the card reader.
+              </span>
+              <span *ngIf="selectedPaymentMethod === 'mobile'">
+                Customer will scan QR code or provide mobile money details.
+              </span>
+              <span *ngIf="selectedPaymentMethod === 'bank-transfer'">
+                Customer will transfer to restaurant bank account.
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div
+      class="p-6 border-t border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800 rounded-b-2xl"
+    >
+      <div class="flex gap-3">
+        <button
+          (click)="closeModal()"
+          class="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="processPayment()"
+          [disabled]="!canProcessPayment"
+          class="flex-1 px-6 py-3 bg-food-orange text-white rounded-xl hover:bg-food-orange-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold flex items-center justify-center gap-2"
+        >
+          <svg
+            *ngIf="isProcessing"
+            class="animate-spin w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"
+              opacity="0.3"
+            />
+            <path
+              d="M12 6c3.31 0 6 2.69 6 6 0 1.66-.67 3.16-1.76 4.24l-1.42-1.42C15.59 14.05 16 13.08 16 12c0-2.21-1.79-4-4-4V6z"
+            />
+          </svg>
+          <span *ngIf="!isProcessing">
+            Complete Payment • {{ formatPrice(total) }}
+          </span>
+          <span *ngIf="isProcessing"> Processing... </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

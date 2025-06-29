@@ -1,0 +1,134 @@
+// Payment Modal Component Styles
+
+// Custom animations for modal
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Modal overlay animation
+.fixed.inset-0 {
+  animation: fadeIn 0.2s ease-out;
+}
+
+// Modal content animation
+.bg-white.dark\\:bg-dark-bg-card {
+  animation: slideIn 0.3s ease-out;
+}
+
+// Custom input focus styles for cash input
+input[type="number"]:focus {
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+// Loading spinner animation
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Custom button hover effects
+.payment-method-button {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &.selected {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
+  }
+}
+
+// Quick cash button styles
+.quick-cash-button {
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    transform: scale(1.02);
+    border-color: #ff6b35;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Change amount highlight
+.change-amount {
+  transition: all 0.3s ease-in-out;
+
+  &.positive {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-left: 4px solid #10b981;
+  }
+
+  &.negative {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-left: 4px solid #ef4444;
+  }
+}
+
+// Payment method icon animations
+.payment-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.payment-method-button:hover .payment-icon {
+  transform: scale(1.1);
+}
+
+// Modal responsiveness
+@media (max-width: 768px) {
+  .payment-modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .payment-methods-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-cash-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Dark mode specific styles
+@media (prefers-color-scheme: dark) {
+  .payment-modal-overlay {
+    backdrop-filter: blur(4px);
+  }
+}
+
+// Print styles for receipts (future use)
+@media print {
+  .payment-modal {
+    display: none;
+  }
+}

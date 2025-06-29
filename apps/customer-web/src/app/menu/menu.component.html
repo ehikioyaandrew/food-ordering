@@ -1,0 +1,182 @@
+<!-- POS Menu Interface -->
+<div class="h-full flex flex-col">
+  <!-- User Role Header -->
+  <div
+    class="mb-4 p-4 bg-gradient-to-r from-food-orange to-food-orange-dark rounded-xl text-white"
+  >
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-bold">{{ currentUser.name }}</h2>
+        <p class="text-sm opacity-90">
+          {{ currentUser.role.name }} • {{ currentUser.shift }}
+        </p>
+        <p class="text-xs opacity-75 mt-1">
+          {{ currentUser.role.description }}
+        </p>
+      </div>
+      <div class="text-right">
+        <div class="bg-white bg-opacity-20 rounded-lg px-3 py-1">
+          <span class="text-xs font-medium">Access Level</span>
+          <div class="text-sm font-bold">
+            {{ allowedCategories.length - 1 }}/{{
+              categories.length - 1
+            }}
+            Categories
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="mb-6">
+    <div class="relative">
+      <div
+        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+      >
+        <svg
+          class="h-5 w-5 text-gray-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
+      <input
+        type="text"
+        placeholder="Search menu items..."
+        (input)="onSearchChange($event)"
+        class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-dark-bg-card text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-food-orange focus:border-transparent"
+      />
+    </div>
+  </div>
+
+  <!-- Category Tabs - Only show categories user has access to -->
+  <div class="mb-6">
+    <div class="flex overflow-x-auto pb-2 space-x-2">
+      <button
+        *ngFor="let category of allowedCategories"
+        (click)="onCategoryChange(category.id)"
+        [class]="
+          selectedCategory === category.id
+            ? 'bg-food-orange text-white'
+            : 'bg-white dark:bg-dark-bg-card text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+        "
+        class="flex items-center gap-2 px-4 py-3 rounded-xl font-medium whitespace-nowrap border border-gray-200 dark:border-gray-600 transition-colors pos-touch-button"
+      >
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path [attr.d]="getIcon(category.icon)"></path>
+        </svg>
+        {{ category.name }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu Items Grid -->
+  <div class="flex-1 overflow-y-auto">
+    <div class="pos-grid pos-grid-4 pb-6">
+      <div
+        *ngFor="let item of filteredItems"
+        class="pos-card hover:shadow-card-hover dark:hover:shadow-card-hover-dark transition-all duration-200 overflow-hidden group cursor-pointer flex flex-col h-full"
+        (click)="addToOrder(item)"
+      >
+        <!-- Item Image -->
+        <div
+          class="relative aspect-video bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0"
+        >
+          <img
+            [src]="item.image"
+            [alt]="item.name"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop'"
+          />
+
+          <!-- Badges -->
+          <div class="absolute top-2 left-2 flex flex-col gap-1">
+            <span
+              *ngIf="item.isPopular"
+              class="bg-food-red text-white text-xs font-bold px-2 py-1 rounded-full"
+            >
+              Popular
+            </span>
+            <span
+              *ngIf="item.isVegetarian"
+              class="bg-food-green text-white text-xs font-bold px-2 py-1 rounded-full"
+            >
+              Vegetarian
+            </span>
+          </div>
+
+          <!-- Availability Badge -->
+          <div
+            *ngIf="!item.isAvailable"
+            class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+          >
+            <span
+              class="bg-red-500 text-white font-bold px-3 py-1 rounded-full"
+            >
+              Out of Stock
+            </span>
+          </div>
+        </div>
+
+        <!-- Item Details -->
+        <div class="p-4 flex flex-col flex-1">
+          <div class="flex items-start justify-between mb-2">
+            <h3
+              class="font-bold text-gray-900 dark:text-white text-lg leading-tight group-hover:text-food-orange transition-colors flex-1 mr-2"
+            >
+              {{ item.name }}
+            </h3>
+            <span class="text-food-orange font-bold text-lg flex-shrink-0">
+              {{ formatPrice(item.price) }}
+            </span>
+          </div>
+
+          <p
+            class="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-1 leading-relaxed"
+          >
+            {{ item.description }}
+          </p>
+
+          <!-- Add Button - Always at bottom -->
+          <button
+            [disabled]="!item.isAvailable"
+            class="w-full pos-button-primary pos-touch-button text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-food-orange-dark mt-auto"
+          >
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            Add to Order
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      *ngIf="filteredItems.length === 0"
+      class="flex flex-col items-center justify-center py-12 text-center"
+    >
+      <svg
+        class="w-16 h-16 text-gray-400 dark:text-gray-500 mb-4"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M21 19c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v14zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
+        />
+      </svg>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        No items found
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400">
+        Try adjusting your search or category filter
+      </p>
+    </div>
+  </div>
+</div>

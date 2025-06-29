@@ -1,0 +1,568 @@
+<!-- Orders Management Interface -->
+<div class="h-full flex flex-col">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Orders</h1>
+        <p class="text-gray-600 dark:text-gray-300">
+          Manage and track all orders for
+          {{ selectedDate | date : "mediumDate" }}
+        </p>
+      </div>
+      <div class="flex gap-3">
+        <button
+          (click)="clearAllFilters()"
+          class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          Clear Filters
+        </button>
+        <button
+          (click)="exportDailySummary()"
+          class="px-4 py-2 bg-food-orange text-white rounded-lg hover:bg-food-orange-dark transition-colors"
+        >
+          Export Summary
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Summary Cards -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+    *ngIf="dailySummary"
+  >
+    <div
+      class="bg-white dark:bg-dark-bg-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ dailySummary.totalOrders }}
+          </p>
+        </div>
+        <div class="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-blue-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-white dark:bg-dark-bg-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ formatPrice(dailySummary.totalRevenue) }}
+          </p>
+        </div>
+        <div class="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-green-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-white dark:bg-dark-bg-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Cash Sales</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ formatPrice(dailySummary.paymentMethods.cash) }}
+          </p>
+        </div>
+        <div class="p-3 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-yellow-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-white dark:bg-dark-bg-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Card Sales</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ formatPrice(dailySummary.paymentMethods.card) }}
+          </p>
+        </div>
+        <div class="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+          <svg
+            class="w-6 h-6 text-purple-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div
+    class="bg-white dark:bg-dark-bg-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-6"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <!-- Search -->
+      <div>
+        <label
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          Search Orders
+        </label>
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <svg
+              class="h-5 w-5 text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (input)="onSearchChange()"
+            placeholder="Order #, cashier, table, item..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-bg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-food-orange focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Payment Method Filter -->
+      <div>
+        <label
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          Payment Method
+        </label>
+        <select
+          [(ngModel)]="selectedPaymentMethod"
+          (change)="onPaymentMethodChange()"
+          class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-food-orange focus:border-transparent"
+        >
+          <option *ngFor="let method of paymentMethods" [value]="method.id">
+            {{ method.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Date Filter -->
+      <div>
+        <label
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          Date
+        </label>
+        <input
+          type="date"
+          [(ngModel)]="selectedDate"
+          (change)="onDateChange()"
+          class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-food-orange focus:border-transparent"
+        />
+      </div>
+
+      <!-- Results Info -->
+      <div class="flex items-end">
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          Showing {{ filteredOrders.length }} of {{ orders.length }} orders
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div
+    class="bg-white dark:bg-dark-bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex-1 flex flex-col min-h-0"
+  >
+    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Order History
+      </h2>
+    </div>
+
+    <div class="flex-1 overflow-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 dark:bg-gray-800 sticky top-0">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Order #
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Time
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Cashier
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Items
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Payment
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Total
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Status
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          class="bg-white dark:bg-dark-bg-card divide-y divide-gray-200 dark:divide-gray-700"
+        >
+          <tr
+            *ngFor="let order of paginatedOrders"
+            class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900 dark:text-white">
+                {{ order.orderNumber }}
+              </div>
+              <div
+                class="text-sm text-gray-500 dark:text-gray-400"
+                *ngIf="order.tableNumber"
+              >
+                {{ order.tableNumber }}
+              </div>
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
+            >
+              {{ order.timestamp | date : "shortTime" }}
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
+            >
+              {{ order.cashier }}
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-900 dark:text-white">
+                {{ order.items.length }} item(s)
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                {{ order.items[0].name
+                }}<span *ngIf="order.items.length > 1">...</span>
+              </div>
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
+            >
+              {{ getPaymentMethodName(order.payment.method) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900 dark:text-white">
+                {{ formatPrice(order.total) }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                [class]="getOrderStatusColor(order.status)"
+                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+              >
+                {{ order.status | titlecase }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <div class="flex gap-2">
+                <button
+                  (click)="viewOrderDetail(order)"
+                  class="text-food-orange hover:text-food-orange-dark"
+                >
+                  View
+                </button>
+                <button
+                  (click)="printReceipt(order)"
+                  class="text-blue-600 hover:text-blue-800"
+                >
+                  Print
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="filteredOrders.length === 0"
+        class="flex flex-col items-center justify-center py-12 text-center"
+      >
+        <svg
+          class="w-16 h-16 text-gray-400 dark:text-gray-500 mb-4"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"
+          />
+        </svg>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          No orders found
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Try adjusting your search or filter criteria
+        </p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div
+      class="px-6 py-3 border-t border-gray-200 dark:border-gray-700"
+      *ngIf="totalPages > 1"
+    >
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-700 dark:text-gray-300">
+          Page {{ currentPage }} of {{ totalPages }}
+        </div>
+        <div class="flex gap-2">
+          <button
+            (click)="goToPage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+            class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+          <button
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+            class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div
+  *ngIf="showOrderDetail && selectedOrder"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  (click)="closeOrderDetail()"
+>
+  <div
+    class="bg-white dark:bg-dark-bg-card rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Order Details
+          </h2>
+          <p class="text-gray-600 dark:text-gray-300">
+            {{ selectedOrder.orderNumber }} •
+            {{ selectedOrder.timestamp | date : "medium" }}
+          </p>
+        </div>
+        <button
+          (click)="closeOrderDetail()"
+          class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="p-6">
+      <!-- Order Info -->
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+            Order Information
+          </h3>
+          <div class="space-y-1 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">Cashier:</span>
+              <span>{{ selectedOrder.cashier }}</span>
+            </div>
+            <div class="flex justify-between" *ngIf="selectedOrder.tableNumber">
+              <span class="text-gray-600 dark:text-gray-400">Table:</span>
+              <span>{{ selectedOrder.tableNumber }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">Status:</span>
+              <span
+                [class]="getOrderStatusColor(selectedOrder.status)"
+                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+              >
+                {{ selectedOrder.status | titlecase }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+            Payment Information
+          </h3>
+          <div class="space-y-1 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">Method:</span>
+              <span>{{
+                getPaymentMethodName(selectedOrder.payment.method)
+              }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">Amount Paid:</span>
+              <span>{{ formatPrice(selectedOrder.payment.amountPaid) }}</span>
+            </div>
+            <div
+              class="flex justify-between"
+              *ngIf="selectedOrder.payment.change > 0"
+            >
+              <span class="text-gray-600 dark:text-gray-400">Change:</span>
+              <span>{{ formatPrice(selectedOrder.payment.change) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400"
+                >Transaction ID:</span
+              >
+              <span class="text-xs">{{
+                selectedOrder.payment.transactionId
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <div class="mb-6">
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">
+          Items Ordered
+        </h3>
+        <div class="space-y-3">
+          <div
+            *ngFor="let item of selectedOrder.items"
+            class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+          >
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-900 dark:text-white">
+                {{ item.name }}
+              </h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                {{ item.category | titlecase }}
+              </p>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">
+                {{ item.quantity }} x {{ formatPrice(item.price) }}
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">
+                {{ formatPrice(item.price * item.quantity) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">
+          Order Summary
+        </h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-300">Subtotal</span>
+            <span>{{ formatPrice(selectedOrder.subtotal) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-300">Tax (8%)</span>
+            <span>{{ formatPrice(selectedOrder.tax) }}</span>
+          </div>
+          <div class="border-t pt-2 flex justify-between text-lg font-bold">
+            <span>Total</span>
+            <span class="text-food-orange">{{
+              formatPrice(selectedOrder.total)
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div
+      class="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-b-2xl"
+    >
+      <div class="flex gap-3">
+        <button
+          (click)="closeOrderDetail()"
+          class="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-medium"
+        >
+          Close
+        </button>
+        <button
+          (click)="printReceipt(selectedOrder)"
+          class="flex-1 px-6 py-3 bg-food-orange text-white rounded-xl hover:bg-food-orange-dark transition-colors font-semibold"
+        >
+          Print Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
